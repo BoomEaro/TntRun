@@ -1,0 +1,6 @@
+name: TntRun
+main: ru.boomearo.tntrun.TntRun
+version: 0.1
+author: BoomEaro
+description: tntrun
+depend: [FastAsyncWorldEdit, Essentials]
