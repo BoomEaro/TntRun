@@ -39,7 +39,7 @@ public class RunningState implements IGameState, ICountable, AllowSpectators {
     public void autoUpdateHandler(Arena arena) {
         for (TntPlayer tp : arena.getAllPlayers()) {
             Player pl = tp.getPlayer();
-            if (!arena.getArenaStructure().getArenaRegion().isInRegion(pl.getLocation())) {
+            if (!arena.getArenaRegion().isInRegion(pl.getLocation())) {
                 IPlayerType type = tp.getPlayerType();
                 if (type instanceof PlayingPlayer) {
                     tp.setPlayerType(new LosePlayer());

@@ -33,18 +33,28 @@ public class Arena implements ConfigurationSerializable {
     private final int maxPlayers;
     private final int timelimit;
     
-    private final ArenaStructure structure;
+    private final World world;
+    private final IRegion arenaRegion;
+    private final List<Location> spawnPoints;
+    
+    private final Location arenaCenter;
+    
+    private final Clipboard clipboard;
     
     private IGameState state = new WaitingState();
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
-    public Arena(String name, int minPlayers, int maxPlayers, int timeLimit, ArenaStructure structure) {
+    public Arena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, List<Location> spawnPoints, Location arenaCenter, Clipboard clipboard) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.timelimit = timeLimit;
-        this.structure = structure;
+        this.world = world;
+        this.arenaRegion = arenaRegion;
+        this.spawnPoints = spawnPoints;
+        this.arenaCenter = arenaCenter;
+        this.clipboard = clipboard;
     }
     
     public String getName() {
@@ -63,8 +73,24 @@ public class Arena implements ConfigurationSerializable {
         return this.timelimit;
     }
     
-    public ArenaStructure getArenaStructure() {
-        return this.structure;
+    public World getWorld() {
+        return this.world;
+    }
+    
+    public IRegion getArenaRegion() {
+        return this.arenaRegion;
+    }
+    
+    public List<Location> getSpawnPoints() {
+        return this.spawnPoints;
+    }
+    
+    public Location getArenaCenter() {
+        return this.arenaCenter;
+    }
+    
+    public Clipboard getClipboard() {
+        return this.clipboard;
     }
     
     public IGameState getGameState() {
@@ -130,17 +156,25 @@ public class Arena implements ConfigurationSerializable {
         result.put("minPlayers", this.minPlayers);
         result.put("maxPlayers", this.maxPlayers);
         result.put("timeLimit", this.timelimit);
-        result.put("structure", this.structure);
+        
+        result.put("world", this.world.getName());
+        result.put("region", this.arenaRegion);
+        result.put("spawnPoints", this.spawnPoints);
+        result.put("arenaCenter", this.arenaCenter);
         
         return result;
     }
     
+    @SuppressWarnings("unchecked")
     public static Arena deserialize(Map<String, Object> args) {
         String name = null;
         int minPlayers = 2;
         int maxPlayers = 15;
         int timeLimit = 300;
-        ArenaStructure structure = null;
+        World world = null;
+        IRegion region = null;
+        List<Location> spawnPoints = null;
+        Location arenaCenter = null;
 
         Object na = args.get("name");
         if (na != null) {
@@ -161,118 +195,40 @@ public class Arena implements ConfigurationSerializable {
         if (tl != null) {
             timeLimit = ((Number) tl).intValue();
         }
+        
+        Object wo = args.get("world");
+        if (wo != null) {
+            world = Bukkit.getWorld((String) wo);
+        }
 
-        Object str = args.get("structure");
-        if (str != null) {
-            structure = (ArenaStructure) str;
+        Object re = args.get("region");
+        if (re != null) {
+            region = (IRegion) re;
+        }
+
+        Object sp = args.get("spawnPoints");
+        if (sp != null) {
+            spawnPoints = (List<Location>) sp;
+        }
+
+        Object ac = args.get("arenaCenter");
+        if (ac != null) {
+            arenaCenter = (Location) ac;
+        }
+
+
+        Clipboard cb = null;
+        try {
+            File schem = new File(TntRun.getInstance().getSchematicDir(), name + ".schem");
+            if (schem.exists() && schem.isFile()) {
+                cb = FaweAPI.load(schem);
+            }
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
         }
         
-        return new Arena(name, minPlayers, maxPlayers, timeLimit, structure);
+        return new Arena(name, minPlayers, maxPlayers, timeLimit, world, region, spawnPoints, arenaCenter, cb);
     }
-    
-    public static class ArenaStructure implements ConfigurationSerializable {
-        
-        private final World world;
-        private final IRegion arenaRegion;
-        private final List<Location> spawnPoints;
-        
-        private final Location arenaCenter;
-        
-        private final String schematicName;
-        private final Clipboard clipboard;
-        
-        public ArenaStructure(World world, IRegion arenaRegion, List<Location> spawnPoints, Location arenaCenter, String schematicName, Clipboard clipboard) {
-            this.world = world;
-            this.arenaRegion = arenaRegion;
-            this.spawnPoints = spawnPoints;
-            this.arenaCenter = arenaCenter;
-            this.schematicName = schematicName;
-            this.clipboard = clipboard;
-        }
-        
-        public World getWorld() {
-            return this.world;
-        }
-        
-        public IRegion getArenaRegion() {
-            return this.arenaRegion;
-        }
-        
-        public List<Location> getSpawnPoints() {
-            return this.spawnPoints;
-        }
-        
-        public Location getArenaCenter() {
-            return this.arenaCenter;
-        }
-        
-        public String getSchematicName() {
-            return this.schematicName;
-        }
-        
-        public Clipboard getClipboard() {
-            return this.clipboard;
-        }
 
-        @Override
-        public Map<String, Object> serialize() {
-            Map<String, Object> result = new LinkedHashMap<String, Object>();
-
-            result.put("world", this.world.getName());
-            result.put("region", this.arenaRegion);
-            result.put("spawnPoints", this.spawnPoints);
-            result.put("arenaCenter", this.arenaCenter);
-            result.put("schematicName", this.schematicName);
-            
-            return result;
-        }
-        
-        @SuppressWarnings("unchecked")
-        public static ArenaStructure deserialize(Map<String, Object> args) {
-            World world = null;
-            IRegion region = null;
-            List<Location> spawnPoints = null;
-            Location arenaCenter = null;
-            String schematicName = null;
-
-            Object wo = args.get("world");
-            if (wo != null) {
-                world = Bukkit.getWorld((String) wo);
-            }
-
-            Object re = args.get("region");
-            if (re != null) {
-                region = (IRegion) re;
-            }
-
-            Object sp = args.get("spawnPoints");
-            if (sp != null) {
-                spawnPoints = (List<Location>) sp;
-            }
-
-            Object ac = args.get("arenaCenter");
-            if (ac != null) {
-                arenaCenter = (Location) ac;
-            }
-
-
-            Object sn = args.get("schematicName");
-            if (sn != null) {
-                schematicName = (String) sn;
-            }
-
-            Clipboard cb = null;
-            try {
-                File schem = new File(TntRun.getInstance().getSchematicDir(), schematicName + ".schem");
-                if (schem.exists() && schem.isFile()) {
-                    cb = FaweAPI.load(schem);
-                }
-            } 
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            return new ArenaStructure(world, region, spawnPoints, arenaCenter, schematicName, cb);
-        }
-    }
 }

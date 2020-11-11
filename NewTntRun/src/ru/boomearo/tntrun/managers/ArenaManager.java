@@ -1,11 +1,14 @@
 package ru.boomearo.tntrun.managers;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.exceptions.TntRunConsoleException;
 import ru.boomearo.tntrun.exceptions.TntRunException;
 import ru.boomearo.tntrun.exceptions.TntRunPlayerException;
@@ -25,6 +28,58 @@ public final class ArenaManager {
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
     private final Object lock = new Object();
+    
+    public ArenaManager() {
+        loadArenas();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void loadArenas() {
+        TntRun.getInstance().reloadConfig();
+        
+        FileConfiguration fc = TntRun.getInstance().getConfig();
+        List<Arena> arenas = (List<Arena>) fc.getList("arenas");
+        for (Arena ar : arenas) {
+            try {
+                addArena(ar);
+            } 
+            catch (TntRunException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void saveArenas() {
+        FileConfiguration fc = TntRun.getInstance().getConfig();
+        fc.set("arenas", null);
+        
+        for (Arena arena : this.arenas.values()) {
+            fc.set("arenas." + arena.getName(), arena);
+        }
+       
+        TntRun.getInstance().saveConfig();
+    }
+    
+    public void addArena(Arena arena) throws TntRunException {
+        if (arena == null) {
+            throw new TntRunConsoleException("Арена не может быть нулем!");
+        }
+        
+        Arena tmpArena = this.arenas.get(arena.getName());
+        if (tmpArena != null) {
+            throw new TntRunConsoleException("Арена " + arena.getName() + " уже создана!");
+        }
+        
+        this.arenas.put(arena.getName(), arena);
+    }
+    
+    public void removeArena(String name) throws TntRunException {
+        if (name == null) {
+            throw new TntRunConsoleException("Название не может быть нулем!");
+        }
+        
+        this.arenas.remove(name);
+    }
     
     public Arena getArenaByName(String name) {
         return this.arenas.get(name);

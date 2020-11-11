@@ -64,7 +64,7 @@ public class TntPlayer {
             pl.setGameMode(GameMode.ADVENTURE);
             
             Arena arena = player.getArena();
-            List<Location> spawns = arena.getArenaStructure().getSpawnPoints();
+            List<Location> spawns = arena.getSpawnPoints();
             
             Location loc = spawns.get(RandomUtil.getRandomNumberRange(0, spawns.size() - 1));
             
@@ -87,7 +87,7 @@ public class TntPlayer {
             pl.setGameMode(GameMode.SPECTATOR);
             
             Arena arena = player.getArena();
-            List<Location> spawns = arena.getArenaStructure().getSpawnPoints();
+            List<Location> spawns = arena.getSpawnPoints();
             
             Location loc = spawns.get(RandomUtil.getRandomNumberRange(0, spawns.size() - 1));
             

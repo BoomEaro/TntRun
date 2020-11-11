@@ -39,7 +39,7 @@ public class PlayerMoveRunnable extends BukkitRunnable {
                 for (TntPlayer tp : arena.getAllPlayersType(PlayingPlayer.class)) {
                     Player pl = tp.getPlayer();
                     //Если игрок внутри арены
-                    if (arena.getArenaStructure().getArenaRegion().isInRegion(pl.getLocation())) {
+                    if (arena.getArenaRegion().isInRegion(pl.getLocation())) {
                         destroyBlock(pl.getLocation(), arena, rs);
                     }
                 }

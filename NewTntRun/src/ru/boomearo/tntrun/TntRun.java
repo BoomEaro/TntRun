@@ -5,9 +5,9 @@ import java.io.File;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ru.boomearo.tntrun.commands.tntrun.CmdExecutorTntRun;
 import ru.boomearo.tntrun.managers.ArenaManager;
 import ru.boomearo.tntrun.objects.Arena;
-import ru.boomearo.tntrun.objects.Arena.ArenaStructure;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
 import ru.boomearo.tntrun.runnable.ArenaRunnable;
 import ru.boomearo.tntrun.runnable.PlayerMoveRunnable;
@@ -19,6 +19,8 @@ public class TntRun extends JavaPlugin {
     private ArenaRunnable ar = null;
     private PlayerMoveRunnable pmr = null;
     
+    public static final String prefix = "§8[§cTntRun§8]: §f";
+    
     private static TntRun instance = null;
 
     public void onEnable() {
@@ -26,7 +28,6 @@ public class TntRun extends JavaPlugin {
         
         ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(Arena.class);
-        ConfigurationSerialization.registerClass(ArenaStructure.class);
         
         File configFile = new File(getDataFolder() + File.separator + "config.yml");
         if(!configFile.exists()) {
@@ -38,6 +39,7 @@ public class TntRun extends JavaPlugin {
             this.arenaManager = new ArenaManager();
         }
         
+        getCommand("tntrun").setExecutor(new CmdExecutorTntRun());
         
         if (this.ar == null) {
             this.ar = new ArenaRunnable();
@@ -58,7 +60,6 @@ public class TntRun extends JavaPlugin {
         
         ConfigurationSerialization.unregisterClass(CuboidRegion.class);
         ConfigurationSerialization.unregisterClass(Arena.class);
-        ConfigurationSerialization.unregisterClass(ArenaStructure.class);
         
         getLogger().info("Плагин успешно выключен.");
     }
@@ -70,6 +71,7 @@ public class TntRun extends JavaPlugin {
     public File getSchematicDir() {
         return new File(this.getDataFolder(), File.separator + "schematics" + File.separator);
     }
+    
     
     public static TntRun getInstance() { 
         return instance;

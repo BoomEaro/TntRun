@@ -4,3 +4,8 @@ version: 0.1
 author: BoomEaro
 description: tntrun
 depend: [FastAsyncWorldEdit, Essentials]
+commands:
+  tntrun:
+    usage: /tntrun
+    aliases: [tr]
+    description: tntrun

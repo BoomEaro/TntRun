@@ -19,7 +19,7 @@ public class StartingState implements IGameState, ICountable, AllowPlayers, Allo
     public void autoUpdateHandler(Arena arena) {
         for (TntPlayer tp : arena.getAllPlayers()) {
             Player pl = tp.getPlayer();
-            if (!arena.getArenaStructure().getArenaRegion().isInRegion(pl.getLocation())) {
+            if (!arena.getArenaRegion().isInRegion(pl.getLocation())) {
                 tp.getPlayerType().handleUpdate(tp);
             }
         }
