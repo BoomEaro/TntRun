@@ -1,10 +1,7 @@
 package ru.boomearo.tntrun.objects.state;
 
-import org.bukkit.entity.Player;
-
 import ru.boomearo.tntrun.objects.Arena;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.IPlayerType;
 import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
 import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
 
@@ -12,23 +9,23 @@ public class WaitingState implements IGameState, AllowPlayers, AllowSpectators {
 
     @Override 
     public void initState(Arena arena) {
+        arena.sendMessages("Ожидание игроков..");
+        
         for (TntPlayer tp : arena.getAllPlayers()) {
-            IPlayerType type = tp.getPlayerType();
             //Возвращаем умерших к жизни так сказать.
-            if (type instanceof LosePlayer) {
+            if (tp.getPlayerType() instanceof LosePlayer) {
                 tp.setPlayerType(new PlayingPlayer());
             }
             
-            type.handleUpdate(tp);
+            tp.getPlayerType().preparePlayer(tp);
         }
     }
     
     @Override
     public void autoUpdateHandler(Arena arena) {
         for (TntPlayer tp : arena.getAllPlayers()) {
-            Player pl = tp.getPlayer();
-            if (!arena.getArenaRegion().isInRegion(pl.getLocation())) {
-                tp.getPlayerType().handleUpdate(tp);
+            if (!arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+                tp.getPlayerType().preparePlayer(tp);
             }
         }
         
@@ -37,8 +34,5 @@ public class WaitingState implements IGameState, AllowPlayers, AllowSpectators {
             arena.setGameState(new StartingState());
         }
     }
-
-    @Override
-    public void endState(Arena arena) {}
 
 }

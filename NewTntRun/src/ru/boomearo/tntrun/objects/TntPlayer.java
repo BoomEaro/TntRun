@@ -2,10 +2,12 @@ package ru.boomearo.tntrun.objects;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.utils.RandomUtil;
 
 public class TntPlayer {
@@ -46,22 +48,29 @@ public class TntPlayer {
     }
     
     public static interface IPlayerType {
-        public void handleUpdate(TntPlayer player);
         public void preparePlayer(TntPlayer player);
     }
     
     public static class PlayingPlayer implements IPlayerType {
-
-        @Override
-        public void handleUpdate(TntPlayer player) {
-            preparePlayer(player);
-        }
         
         @Override
         public void preparePlayer(TntPlayer player) {
+            if (Bukkit.isPrimaryThread()) {
+                task(player);
+            }
+            else {
+                Bukkit.getScheduler().runTask(TntRun.getInstance(), () -> {
+                    task(player);
+                });
+            }
+        }
+        
+        private void task(TntPlayer player) {
             Player pl = player.getPlayer();
             
             pl.setGameMode(GameMode.ADVENTURE);
+            pl.setLevel(0);
+            pl.getInventory().clear();
             
             Arena arena = player.getArena();
             List<Location> spawns = arena.getSpawnPoints();
@@ -76,15 +85,23 @@ public class TntPlayer {
     public static class SpectatingPlayer implements IPlayerType {
 
         @Override
-        public void handleUpdate(TntPlayer player) {
-            preparePlayer(player);
+        public void preparePlayer(TntPlayer player) {
+            if (Bukkit.isPrimaryThread()) {
+                task(player);
+            }
+            else {
+                Bukkit.getScheduler().runTask(TntRun.getInstance(), () -> {
+                    task(player);
+                });
+            }
         }
         
-        @Override
-        public void preparePlayer(TntPlayer player) {
+        private void task(TntPlayer player) {
             Player pl = player.getPlayer();
             
             pl.setGameMode(GameMode.SPECTATOR);
+            pl.setLevel(0);
+            pl.getInventory().clear();
             
             Arena arena = player.getArena();
             List<Location> spawns = arena.getSpawnPoints();

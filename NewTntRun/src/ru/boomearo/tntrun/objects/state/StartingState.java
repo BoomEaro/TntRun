@@ -1,14 +1,14 @@
 package ru.boomearo.tntrun.objects.state;
 
-import org.bukkit.entity.Player;
-
 import ru.boomearo.tntrun.objects.Arena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
 
 public class StartingState implements IGameState, ICountable, AllowPlayers, AllowSpectators {
 
-    private int count = 10;
+    private int count = 30;
+    
+    private int cd = 20;
     
     @Override
     public void initState(Arena arena) {
@@ -18,27 +18,41 @@ public class StartingState implements IGameState, ICountable, AllowPlayers, Allo
     @Override
     public void autoUpdateHandler(Arena arena) {
         for (TntPlayer tp : arena.getAllPlayers()) {
-            Player pl = tp.getPlayer();
-            if (!arena.getArenaRegion().isInRegion(pl.getLocation())) {
-                tp.getPlayerType().handleUpdate(tp);
+            if (!arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+                tp.getPlayerType().preparePlayer(tp);
             }
         }
         //Если игроков не достаточно для игры, то возвращаемся в ожидание
         if (arena.getAllPlayersType(PlayingPlayer.class).size() < arena.getMinPlayers()) {
-            arena.setGameState(new WaitingState());
             arena.sendMessages("Не достаточно игроков для старта!");
+            arena.setGameState(new WaitingState());
             return;
         }
         
-        if (this.count <= 0) {
-            arena.setGameState(new RunningState(arena.getTimeLimit()));
+        handleCount(arena);
+
+    }
+    
+    private void handleCount(Arena arena) {
+        if (this.cd <= 0) {
+            this.cd = 20;
+            
+            if (this.count <= 0) {
+                arena.setGameState(new RunningState(arena.getTimeLimit()));
+                return;
+            }
+            
+            arena.sendLevels(this.count);
+            arena.sendMessages("Игра начнется через " + this.count);
+            
+            this.count--;
+            
             return;
         }
-        this.count--;
+        
+        this.cd--;
     }
 
-    @Override
-    public void endState(Arena arena) {}
     
     @Override
     public int getCount() {

@@ -7,7 +7,6 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 import ru.boomearo.tntrun.objects.Arena;
 import ru.boomearo.tntrun.objects.TntPlayer;
@@ -18,6 +17,8 @@ import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
 public class RunningState implements IGameState, ICountable, AllowSpectators {
 
     private int count;
+
+    private int cd = 20;
     
     private final Map<String, Material> removedBlocks = new HashMap<String, Material>();
     
@@ -29,7 +30,7 @@ public class RunningState implements IGameState, ICountable, AllowSpectators {
     public void initState(Arena arena) {
         //Подготавливаем всех игроков (например тп на точку возрождения)
         for (TntPlayer tp : arena.getAllPlayers()) {
-            tp.getPlayerType().handleUpdate(tp);
+            tp.getPlayerType().preparePlayer(tp);
         }
         
         arena.sendMessages("Игра началась!");
@@ -38,8 +39,7 @@ public class RunningState implements IGameState, ICountable, AllowSpectators {
     @Override
     public void autoUpdateHandler(Arena arena) {
         for (TntPlayer tp : arena.getAllPlayers()) {
-            Player pl = tp.getPlayer();
-            if (!arena.getArenaRegion().isInRegion(pl.getLocation())) {
+            if (!arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
                 IPlayerType type = tp.getPlayerType();
                 if (type instanceof PlayingPlayer) {
                     tp.setPlayerType(new LosePlayer());
@@ -62,29 +62,42 @@ public class RunningState implements IGameState, ICountable, AllowSpectators {
                     }
                 }
                 
-                type.handleUpdate(tp);
+                type.preparePlayer(tp);
             }
         }
         
-        if (arena.getAllPlayersType(PlayingPlayer.class).size() <= 0) {
+        //Играть одним низя
+        if (arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
+            arena.sendMessages("Не достаточно игроков для игры!");
             arena.setGameState(new EndingState());
             return;
         }
-        if (this.count <= 0) {
-            arena.setGameState(new EndingState());
-            arena.sendMessages("Время вышло! Ничья!");
-            return;
-        }
-        this.count--;
         
-        arena.sendMessages("Время игры: " + this.count);
-    }
-
-    @Override
-    public void endState(Arena arena) {
-
+        handleCount(arena);
     }
     
+    private void handleCount(Arena arena) {
+        if (this.cd <= 0) {
+            this.cd = 20;
+            
+            if (this.count <= 0) {
+                arena.sendMessages("Время вышло! Ничья!");
+                arena.setGameState(new EndingState());
+                return;
+            }
+            
+            arena.sendLevels(this.count);
+            arena.sendMessages("Игра закончится через " + this.count);
+            
+            this.count--;
+            
+            return;
+            
+        }
+        this.cd--;
+    }
+    
+
     @Override
     public int getCount() {
         return this.count;

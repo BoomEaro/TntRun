@@ -2,22 +2,30 @@ package ru.boomearo.tntrun;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.spawn.EssentialsSpawn;
+
 import ru.boomearo.tntrun.commands.tntrun.CmdExecutorTntRun;
+import ru.boomearo.tntrun.listeners.ArenaListener;
+import ru.boomearo.tntrun.listeners.PlayerListener;
+import ru.boomearo.tntrun.listeners.SpectatorListener;
 import ru.boomearo.tntrun.managers.ArenaManager;
 import ru.boomearo.tntrun.objects.Arena;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
-import ru.boomearo.tntrun.runnable.ArenaRunnable;
-import ru.boomearo.tntrun.runnable.PlayerMoveRunnable;
+import ru.boomearo.tntrun.runnable.ArenasRunnable;
 
 public class TntRun extends JavaPlugin {
     
     private ArenaManager arenaManager = null;
     
-    private ArenaRunnable ar = null;
-    private PlayerMoveRunnable pmr = null;
+    private ArenasRunnable pmr = null;
+    
+    private Essentials ess = null;
+    private EssentialsSpawn essSpawn = null;
     
     public static final String prefix = "§8[§cTntRun§8]: §f";
     
@@ -25,6 +33,9 @@ public class TntRun extends JavaPlugin {
 
     public void onEnable() {
         instance = this;
+        
+        this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+        this.essSpawn = (EssentialsSpawn) Bukkit.getPluginManager().getPlugin("EssentialsSpawn");
         
         ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(Arena.class);
@@ -41,12 +52,12 @@ public class TntRun extends JavaPlugin {
         
         getCommand("tntrun").setExecutor(new CmdExecutorTntRun());
         
-        if (this.ar == null) {
-            this.ar = new ArenaRunnable();
-        }
+        getServer().getPluginManager().registerEvents(new ArenaListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new SpectatorListener(), this);
         
         if (this.pmr == null) {
-            this.pmr = new PlayerMoveRunnable();
+            this.pmr = new ArenasRunnable();
         }
         
         getLogger().info("Плагин успешно запущен.");
@@ -54,9 +65,6 @@ public class TntRun extends JavaPlugin {
     
     
     public void onDisable() {
-        if (this.ar != null) {
-            this.ar.interrupt();
-        }
         
         ConfigurationSerialization.unregisterClass(CuboidRegion.class);
         ConfigurationSerialization.unregisterClass(Arena.class);
@@ -66,6 +74,14 @@ public class TntRun extends JavaPlugin {
     
     public ArenaManager getArenaManager() {
         return this.arenaManager;
+    }
+    
+    public Essentials getEssentials() {
+        return this.ess;
+    }
+    
+    public EssentialsSpawn getEssentialsSpawn() {
+        return this.essSpawn;
     }
     
     public File getSchematicDir() {

@@ -1,9 +1,9 @@
 package ru.boomearo.tntrun.runnable;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -17,12 +17,12 @@ import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
 import ru.boomearo.tntrun.objects.state.IGameState;
 import ru.boomearo.tntrun.objects.state.RunningState;
 
-public class PlayerMoveRunnable extends BukkitRunnable {
-
-    private static final int SCAN_DEPTH = 2;  
-    private static double PLAYER_BOUNDINGBOX_ADD = 0.3;
+public class ArenasRunnable extends BukkitRunnable {
     
-    public PlayerMoveRunnable() {
+    private static final int SCAN_DEPTH = 2;  
+    private static final double PLAYER_BOUNDINGBOX_ADD = 0.3;
+    
+    public ArenasRunnable() {
         runnable();
     }
     
@@ -33,10 +33,15 @@ public class PlayerMoveRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (Arena arena : TntRun.getInstance().getArenaManager().getAllArenas()) {
+            
             IGameState state = arena.getGameState();
+            
+            state.autoUpdateHandler(arena);
+            
             if (state instanceof RunningState) {
                 RunningState rs = (RunningState) state;
                 for (TntPlayer tp : arena.getAllPlayersType(PlayingPlayer.class)) {
+                    
                     Player pl = tp.getPlayer();
                     //Если игрок внутри арены
                     if (arena.getArenaRegion().isInRegion(pl.getLocation())) {
@@ -51,57 +56,61 @@ public class PlayerMoveRunnable extends BukkitRunnable {
         int y = loc.getBlockY() + 1;
         Block block = null;
         for (int i = 0; i <= SCAN_DEPTH; i++) {
-            block = getBlockUnderPlayer(y, loc);
+            block = getBlockUnderPlayer(loc.getWorld(), loc.getX(), y, loc.getZ());
             y--;
             if (block != null) {
                 break;
             }
         }
+
         if (block != null) {
-            final Block fblock = block;
-            Material mat = rs.getBlockByLocation(fblock.getLocation());
-            if (mat == null) {
-                rs.addBlock(fblock);
-                
-                Bukkit.getScheduler().runTaskLater(TntRun.getInstance(), () -> {
+            final Block fBlock = block;
+            Material m = fBlock.getType();
+            if (m == Material.SAND || m == Material.RED_SAND) {
+                Material mat = rs.getBlockByLocation(fBlock.getLocation());
+                if (mat == null) {
+                    rs.addBlock(fBlock);
                     
-                    if (arena.getGameState() instanceof RunningState) {
-                        //blockstodestroy.remove(fblock);
-                        removeGLBlocks(fblock);
-                        fblock.getWorld().playEffect(fblock.getLocation(), Effect.STEP_SOUND, fblock.getType());
-                    }
-                }, 8);
+                    Bukkit.getScheduler().runTaskLater(TntRun.getInstance(), () -> {
+                        
+                        if (arena.getGameState() instanceof RunningState) {
+                            //blockstodestroy.remove(fblock);
+                            removeGLBlocks(fBlock);
+                        }
+                    }, 8);
+                }
             }
         }
     }
     
     private static void removeGLBlocks(Block block) {
-        block.setType(Material.AIR);
+        //block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 1, 1, 1, 1, 1, block.getBlockData());
+        //block.setType(Material.AIR);
         block = block.getRelative(BlockFace.DOWN);
         block.setType(Material.AIR);
     }
     
-    private static Block getBlockUnderPlayer(int y, Location location) {
-        Block b11 = getBlock(location, +PLAYER_BOUNDINGBOX_ADD, -PLAYER_BOUNDINGBOX_ADD);
+    private static Block getBlockUnderPlayer(World world, double x, int y, double z) {
+        Block b11 = getBlock(world, x, y, z, +PLAYER_BOUNDINGBOX_ADD, -PLAYER_BOUNDINGBOX_ADD);
         if (b11.getType() != Material.AIR) {
             return b11;
         }
-        Block b12 = getBlock(location, -PLAYER_BOUNDINGBOX_ADD, +PLAYER_BOUNDINGBOX_ADD);
+        Block b12 = getBlock(world, x, y, z, -PLAYER_BOUNDINGBOX_ADD, +PLAYER_BOUNDINGBOX_ADD);
         if (b12.getType() != Material.AIR) {
             return b12;
         }
-        Block b21 = getBlock(location, +PLAYER_BOUNDINGBOX_ADD, +PLAYER_BOUNDINGBOX_ADD);
+        Block b21 = getBlock(world, x, y, z, +PLAYER_BOUNDINGBOX_ADD, +PLAYER_BOUNDINGBOX_ADD);
         if (b21.getType() != Material.AIR) {
             return b21;
         }
-        Block b22 = getBlock(location, -PLAYER_BOUNDINGBOX_ADD, -PLAYER_BOUNDINGBOX_ADD);
+        Block b22 = getBlock(world, x, y, z, -PLAYER_BOUNDINGBOX_ADD, -PLAYER_BOUNDINGBOX_ADD);
         if (b22.getType() != Material.AIR) {
             return b22;
         }
         return null;
     }
     
-    private static Block getBlock(Location loc, double addx, double addz) {
-        return loc.getWorld().getBlockAt(NumberConversions.floor(loc.getX() + addx), loc.getBlockY(), NumberConversions.floor(loc.getZ() + addz));
+    private static Block getBlock(World world, double x, int y, double z, double addx, double addz) {
+        return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
     }
 }

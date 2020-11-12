@@ -17,7 +17,10 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import com.boydti.fawe.FaweAPI;
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.transform.Transform;
 
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntPlayer.IPlayerType;
@@ -41,7 +44,7 @@ public class Arena implements ConfigurationSerializable {
     
     private final Clipboard clipboard;
     
-    private IGameState state = new WaitingState();
+    private volatile IGameState state = new WaitingState();
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
@@ -98,9 +101,6 @@ public class Arena implements ConfigurationSerializable {
     }
     
     public void setGameState(IGameState state) {
-        //Старое значение
-        this.state.endState(this);
-        
         //Устанавливаем новое
         this.state = state;
         
@@ -120,6 +120,20 @@ public class Arena implements ConfigurationSerializable {
         return this.players.values();
     }
     
+    public void regenArena() {
+        try {
+            Location loc = this.arenaCenter;
+            EditSession editSession = this.clipboard.paste(FaweAPI.getWorld(this.world.getName()), BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), true, true, (Transform) null);
+            editSession.flushQueue();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            setGameState(new WaitingState());
+        }
+    }
+    
     public void sendMessages(String msg) {
         sendMessages(msg, null);
     }
@@ -134,6 +148,26 @@ public class Arena implements ConfigurationSerializable {
             Player pl = tp.getPlayer();
             if (pl.isOnline()) {
                 pl.sendMessage(msg);
+            }
+        }
+    }
+    
+    public void sendLevels(int level) {
+        if (Bukkit.isPrimaryThread()) {
+            handleSendLevels(level);
+        }
+        else {
+            Bukkit.getScheduler().runTask(TntRun.getInstance(), () -> {
+                handleSendLevels(level);
+            });
+        }
+    }
+    
+    private void handleSendLevels(int level) {
+        for (TntPlayer tp : this.players.values()) {
+            Player pl = tp.getPlayer();
+            if (pl.isOnline()) {
+                pl.setLevel(level);
             }
         }
     }

@@ -7,6 +7,4 @@ public interface IGameState {
     public void initState(Arena arena);
     
     public void autoUpdateHandler(Arena arena);
-    
-    public void endState(Arena arena);
 }

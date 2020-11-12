@@ -3,7 +3,8 @@ main: ru.boomearo.tntrun.TntRun
 version: 0.1
 author: BoomEaro
 description: tntrun
-depend: [FastAsyncWorldEdit, Essentials]
+api-version: 1.13
+depend: [FastAsyncWorldEdit, Essentials, EssentialsSpawn]
 commands:
   tntrun:
     usage: /tntrun
