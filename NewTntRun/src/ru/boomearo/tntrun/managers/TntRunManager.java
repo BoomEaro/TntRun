@@ -26,6 +26,7 @@ import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 import ru.boomearo.tntrun.objects.state.SpectatorFirst;
+import ru.boomearo.tntrun.utils.ExpFix;
 
 public final class TntRunManager implements IGameManager {
 
@@ -80,9 +81,12 @@ public final class TntRunManager implements IGameManager {
         //Если статус игры реализует это, значит добавляем игрока в наблюдатели сначала
         if (state instanceof SpectatorFirst) {
             type = new LosePlayer();
+            pl.sendMessage("Вы присоединились к арене " + arena + " как наблюдатель.");
+            pl.sendMessage("Чтобы покинуть игру, используйте несколько раз кнопку '1' или телепортируйтесь к любому игроку используя возможность наблюдателя.");
         }
         else {
             type = new PlayingPlayer();
+            pl.sendMessage("Вы присоединились к арене " + arena + "!");
         }
 
         //Создаем игрока
@@ -96,6 +100,14 @@ public final class TntRunManager implements IGameManager {
 
         //Обрабатываем игрока
         type.preparePlayer(newTp);
+        
+        
+        for (TntPlayer tpa : tmpArena.getAllPlayers()) {
+            if (tpa.getName().equals(pl.getName())) {
+                continue;
+            }
+            tpa.getPlayer().sendMessage("Игрок " + pl.getName() + " присоединился к игре!");
+        }
         
         return newTp;
     }
@@ -111,30 +123,42 @@ public final class TntRunManager implements IGameManager {
             throw new PlayerGameException("Игрок не в игре!");
         }
 
-        tmpPlayer.getArena().removePlayer(pl.getName());
+        TntArena arena = tmpPlayer.getArena();
+        
+        arena.removePlayer(pl.getName());
 
         this.players.remove(pl.getName());
 
         if (Bukkit.isPrimaryThread()) {
-            handlePlayerLeave(pl);
+            handlePlayerLeave(pl, arena);
         }
         else {
             Bukkit.getScheduler().runTask(TntRun.getInstance(), () -> {
-                handlePlayerLeave(pl);
+                handlePlayerLeave(pl, arena);
             });
         }
     }
 
-    private static void handlePlayerLeave(Player pl) {
+    private static void handlePlayerLeave(Player pl, TntArena arena) {
         Location loc = TntRun.getInstance().getEssentialsSpawn().getSpawn("default");
         if (loc != null) {
             pl.teleport(loc);
         }
 
         pl.setGameMode(GameMode.ADVENTURE);
-        pl.setLevel(0);
+        
+        ExpFix.setTotalExperience(pl, 0);
         
         pl.getInventory().clear();
+        
+        pl.sendMessage("Вы покинули игру!");
+        
+        for (TntPlayer tpa : arena.getAllPlayers()) {
+            if (tpa.getName().equals(pl.getName())) {
+                continue;
+            }
+            tpa.getPlayer().sendMessage("Игрок " + pl.getName() + " покинул игру!");
+        }
     }
     
     @Override

@@ -21,7 +21,7 @@ import ru.boomearo.tntrun.objects.state.RunningState.BlockOwner;
 
 public class ArenasRunnable extends BukkitRunnable {
     
-    private static final int SCAN_DEPTH = 2;  
+    private static final int SCAN_DEPTH = 3;  
     private static final double PLAYER_BOUNDINGBOX_ADD = 0.3;
     
     public ArenasRunnable() {

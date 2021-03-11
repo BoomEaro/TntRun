@@ -27,7 +27,6 @@ public enum ItemButton {
         
     });
     
-    
     private ItemStack item;
     private int slot;
     private ButtonClick click;

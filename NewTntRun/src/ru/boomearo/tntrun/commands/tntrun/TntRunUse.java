@@ -20,7 +20,6 @@ import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.commands.CmdInfo;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
-import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
 
 public class TntRunUse {
@@ -81,8 +80,6 @@ public class TntRunUse {
 
         try {
             GameControl.getInstance().getGameManager().joinGame(pl, TntRun.class, arena);
-            
-            pl.sendMessage("Вы присоединились к арене " + arena + "!");
         } 
         catch (PlayerGameException e) {
             pl.sendMessage("Ошибка: " + e.getMessage());
@@ -107,8 +104,6 @@ public class TntRunUse {
 
         try {
             GameControl.getInstance().getGameManager().leaveGame(pl);
-            
-            pl.sendMessage("Вы покинули игру!");
         } 
         catch (PlayerGameException e) {
             pl.sendMessage("Ошибка: " + e.getMessage());
@@ -128,7 +123,7 @@ public class TntRunUse {
         }
         
         for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
-            cs.sendMessage("Арена: " + arena.getName() + ". Статус: " + arena.getGameState().getName() + ". Игроков: " + arena.getAllPlayersType(PlayingPlayer.class).size());
+            cs.sendMessage("Арена: " + arena.getName() + ". Статус: " + arena.getGameState().getName() + ". Игроков: " + arena.getAllPlayers().size());
         }
         
         return true;

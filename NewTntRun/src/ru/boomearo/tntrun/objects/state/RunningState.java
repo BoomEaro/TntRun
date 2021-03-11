@@ -53,13 +53,24 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
     @Override
     public void autoUpdateHandler() {
         for (TntPlayer tp : this.arena.getAllPlayers()) {
+            tp.getPlayer().spigot().respawn();
             
             if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
                 if (tp.getPlayerType() instanceof PlayingPlayer) {
                     PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
                     tp.setPlayerType(new LosePlayer());
                     
-                    this.arena.sendMessages("Игрок " + tp.getName() + " свалился с арены из-за игрока " + pp.getKiller());
+                    if (pp.getKiller() != null) {
+                        if (tp.getName().equals(pp.getKiller())) {
+                            this.arena.sendMessages("Игрок " + tp.getName() + " проиграл, свалившись в свою же яму!");
+                        }
+                        else {
+                            this.arena.sendMessages("Игрок " + tp.getName() + " проиграл, свалившись в яму игрока " + pp.getKiller());
+                        }
+                    }
+                    else {
+                        this.arena.sendMessages("Игрок " + tp.getName() + " проиграл, зайдя за границы игры.");
+                    }
                     
                     Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
                     if (win.size() == 1) {
@@ -122,7 +133,15 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             }
             
             arena.sendLevels(this.count);
-            arena.sendMessages("Игра закончится через " + this.count);
+            
+            if (this.count <= 10) {
+                arena.sendMessages("Игра закончится через " + this.count);
+            }
+            else {
+                if ((this.count % 30) == 0){
+                    arena.sendMessages("Игра закончится через " + this.count);
+                }
+            }
             
             this.count--;
             

@@ -26,7 +26,9 @@ public class PlayerListener implements Listener {
         if (tp != null) {
             LosePlayer lp = new LosePlayer();
             tp.setPlayerType(lp);
-            lp.preparePlayer(tp);
+            
+            e.setDroppedExp(0);
+            e.getDrops().clear();
         }
     }
     
@@ -37,6 +39,7 @@ public class PlayerListener implements Listener {
         TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {
             e.setRespawnLocation(tp.getArena().getArenaCenter());
+            tp.getPlayerType().preparePlayer(tp);
         }
     }
     

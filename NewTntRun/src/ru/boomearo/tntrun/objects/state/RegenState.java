@@ -35,6 +35,8 @@ public class RegenState implements IGameState, SpectatorFirst {
     @Override
     public void autoUpdateHandler() {
         for (TntPlayer tp : this.arena.getAllPlayers()) {
+            tp.getPlayer().spigot().respawn();
+            
             if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
                 tp.getPlayerType().preparePlayer(tp);
             }
