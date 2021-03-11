@@ -22,18 +22,16 @@ import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.IPlayerType;
-import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
+import ru.boomearo.tntrun.objects.playertype.IPlayerType;
+import ru.boomearo.tntrun.objects.playertype.LosePlayer;
+import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 import ru.boomearo.tntrun.objects.state.SpectatorFirst;
-import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
 
 public final class TntRunManager implements IGameManager {
 
     private final ConcurrentMap<String, TntArena> arenas = new ConcurrentHashMap<String, TntArena>();
 
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
-
-    private final Object lock = new Object();
 
     public TntRunManager() {
         loadArenas();
@@ -190,14 +188,12 @@ public final class TntRunManager implements IGameManager {
             throw new ConsoleGameException("Арена не может быть нулем!");
         }
 
-        synchronized (this.lock) {
-            TntArena tmpArena = this.arenas.get(arena.getName());
-            if (tmpArena != null) {
-                throw new ConsoleGameException("Арена " + arena.getName() + " уже создана!");
-            }
-
-            this.arenas.put(arena.getName(), arena);
+        TntArena tmpArena = this.arenas.get(arena.getName());
+        if (tmpArena != null) {
+            throw new ConsoleGameException("Арена " + arena.getName() + " уже создана!");
         }
+
+        this.arenas.put(arena.getName(), arena);
     }
 
     public void removeArena(String name) throws ConsoleGameException {
@@ -205,14 +201,12 @@ public final class TntRunManager implements IGameManager {
             throw new ConsoleGameException("Название не может быть нулем!");
         }
 
-        synchronized (this.lock) {
-            TntArena tmpArena = this.arenas.get(name);
-            if (tmpArena == null) {
-                throw new ConsoleGameException("Арена " + name + " не найдена!");
-            }
-
-            this.arenas.remove(name);
+        TntArena tmpArena = this.arenas.get(name);
+        if (tmpArena == null) {
+            throw new ConsoleGameException("Арена " + name + " не найдена!");
         }
+
+        this.arenas.remove(name);
     }
 
 

@@ -20,8 +20,8 @@ import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.commands.CmdInfo;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
+import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
-import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
 
 public class TntRunUse {
 

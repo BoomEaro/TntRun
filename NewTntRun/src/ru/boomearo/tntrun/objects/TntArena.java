@@ -26,9 +26,10 @@ import ru.boomearo.gamecontrol.objects.IGameArena;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
-import ru.boomearo.tntrun.objects.TntPlayer.IPlayerType;
+import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.region.IRegion;
 import ru.boomearo.tntrun.objects.state.WaitingState;
+import ru.boomearo.tntrun.utils.RandomUtil;
 
 public class TntArena implements IGameArena, ConfigurationSerializable {
 
@@ -200,6 +201,12 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
             }
         }
         return tmp;
+    }
+    
+    public Location getRandomSpawnLocation() {
+        List<Location> spawns = getSpawnPoints();
+        
+        return spawns.get(RandomUtil.getRandomNumberRange(0, spawns.size() - 1));
     }
     
     @Override

@@ -15,7 +15,7 @@ import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
+import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 import ru.boomearo.tntrun.objects.state.RunningState;
 import ru.boomearo.tntrun.objects.state.RunningState.BlockOwner;
 

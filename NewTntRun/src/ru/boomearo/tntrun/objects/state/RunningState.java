@@ -12,8 +12,8 @@ import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
+import ru.boomearo.tntrun.objects.playertype.LosePlayer;
+import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 
 public class RunningState implements IRunningState, ICountable, SpectatorFirst {
 

@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
+import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 
 public class PlayerListener implements Listener {
     

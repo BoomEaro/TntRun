@@ -9,7 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.spawn.EssentialsSpawn;
 
-import ru.boomearo.gamecontrol.exceptions.GameControlException;
+import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
+import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.commands.tntrun.CmdExecutorTntRun;
 import ru.boomearo.tntrun.listeners.ArenaListener;
 import ru.boomearo.tntrun.listeners.PlayerButtonListener;
@@ -17,8 +19,8 @@ import ru.boomearo.tntrun.listeners.PlayerListener;
 import ru.boomearo.tntrun.listeners.SpectatorListener;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
-import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
+import ru.boomearo.tntrun.objects.state.RegenState;
 import ru.boomearo.tntrun.runnable.ArenasRunnable;
 
 public class TntRun extends JavaPlugin {
@@ -53,6 +55,13 @@ public class TntRun extends JavaPlugin {
             this.arenaManager = new TntRunManager();
         }
         
+        try {
+            GameControl.getInstance().getGameManager().registerGame(this.getClass(), this.arenaManager);
+        } 
+        catch (ConsoleGameException e) {
+            e.printStackTrace();
+        }
+        
         getCommand("tntrun").setExecutor(new CmdExecutorTntRun());
         
         getServer().getPluginManager().registerEvents(new ArenaListener(), this);
@@ -71,21 +80,19 @@ public class TntRun extends JavaPlugin {
     
     
     public void onDisable() {
-        
-        for (TntPlayer tp : this.arenaManager.getAllPlayers()) {
-            try {
-                this.arenaManager.leave(tp.getPlayer());
-            } 
-            catch (GameControlException e) {
-                e.printStackTrace();
-            }
+        try {
+            GameControl.getInstance().getGameManager().unregisterGame(this.getClass());
+        } 
+        catch (ConsoleGameException e) {
+            e.printStackTrace();
         }
-        
+
         for (TntArena ar : this.arenaManager.getAllArenas()) {
-            //IGameState state = ar.getGameState();
-            //if (state instanceof ) {
-            //    
-            //}
+            IGameState state = ar.getGameState();
+            //Если выключение сервера застал в момент регенерации, то ничего не делаем
+            if (state instanceof RegenState) {
+                continue;
+            }
             ar.regen();
         }
         

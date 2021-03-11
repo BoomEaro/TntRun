@@ -3,8 +3,8 @@ package ru.boomearo.tntrun.objects.state;
 import ru.boomearo.gamecontrol.objects.states.IWaitingState;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
+import ru.boomearo.tntrun.objects.playertype.LosePlayer;
+import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 
 public class WaitingState implements IWaitingState {
 

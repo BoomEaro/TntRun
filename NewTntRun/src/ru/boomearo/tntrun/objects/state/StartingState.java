@@ -4,7 +4,7 @@ import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
+import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 
 public class StartingState implements IGameState, ICountable {
 
