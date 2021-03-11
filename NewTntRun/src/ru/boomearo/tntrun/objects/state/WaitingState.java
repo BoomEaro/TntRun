@@ -40,17 +40,17 @@ public class WaitingState implements IWaitingState {
     
     @Override
     public void autoUpdateHandler() {
+        //Если мы набрали минимум то меняем статус
+        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() >= this.arena.getMinPlayers()) {
+            this.arena.setGameState(new StartingState(this.arena));
+        }
+        
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayer().spigot().respawn();
             
             if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
                 tp.getPlayerType().preparePlayer(tp);
             }
-        }
-        
-        //Если мы набрали минимум то меняем статус
-        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() >= this.arena.getMinPlayers()) {
-            this.arena.setGameState(new StartingState(this.arena));
         }
     }
 

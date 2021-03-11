@@ -90,6 +90,10 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     
     @Override
     public void regen() {
+        if (this.clipboard == null) {
+            return;
+        }
+        
         try {
             Location loc = this.arenaCenter;
             EditSession editSession = this.clipboard.paste(FaweAPI.getWorld(this.world.getName()), BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), true, true, (Transform) null);

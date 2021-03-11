@@ -10,6 +10,8 @@ import org.bukkit.block.Block;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
+import ru.boomearo.gamecontrol.utils.Vault;
+import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
@@ -18,8 +20,8 @@ import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 public class RunningState implements IRunningState, ICountable, SpectatorFirst {
 
     private final TntArena arena;
-    
     private int count;
+    private int deathPlayers = 0;
 
     private int cd = 20;
     
@@ -52,6 +54,13 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
     
     @Override
     public void autoUpdateHandler() {
+        //Играть одним низя
+        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
+            this.arena.sendMessages("Не достаточно игроков для игры!");
+            this.arena.setGameState(new EndingState(this.arena));
+            return;
+        }
+        
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayer().spigot().respawn();
             
@@ -59,6 +68,8 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                 if (tp.getPlayerType() instanceof PlayingPlayer) {
                     PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
                     tp.setPlayerType(new LosePlayer());
+                    
+                    this.deathPlayers++;
                     
                     if (pp.getKiller() != null) {
                         if (tp.getName().equals(pp.getKiller())) {
@@ -82,6 +93,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                         if (winner != null) {
                             winner.setPlayerType(new LosePlayer());
                             this.arena.sendMessages("Игрок " + winner.getName() + " победил!");
+                            
+                            //В зависимости от того сколько игроков ПРОИГРАЛО мы получим награду.
+                            double reward = TntRunManager.winReward + (this.deathPlayers * TntRunManager.winReward);
+                            
+                            Vault.addMoney(winner.getName(), reward);
+                            
+                            winner.getPlayer().sendMessage("Ваша награда за победу: " + reward);
+                            
                             this.arena.setGameState(new EndingState(this.arena));
                             return;
                         }
@@ -102,14 +121,8 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             }
         }
         
-        //Играть одним низя
-        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
-            this.arena.sendMessages("Не достаточно игроков для игры!");
-            this.arena.setGameState(new EndingState(this.arena));
-            return;
-        }
         
-        handleCount(arena);
+        handleCount(this.arena);
     }
     
     @Override

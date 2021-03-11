@@ -33,6 +33,8 @@ public final class TntRunManager implements IGameManager {
     private final ConcurrentMap<String, TntArena> arenas = new ConcurrentHashMap<String, TntArena>();
 
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
+    
+    public static final double winReward = 4;
 
     public TntRunManager() {
         loadArenas();
@@ -87,6 +89,10 @@ public final class TntRunManager implements IGameManager {
         else {
             type = new PlayingPlayer();
             pl.sendMessage("Вы присоединились к арене " + arena + "!");
+            
+            if (tmpArena.getAllPlayers().size() < tmpArena.getMinPlayers()) {
+                pl.sendMessage("Ожидание " + tmpArena.getMinPlayers() + " игроков для начала игры...");
+            }
         }
 
         //Создаем игрока
