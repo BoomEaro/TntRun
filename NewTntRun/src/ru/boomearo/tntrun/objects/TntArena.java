@@ -22,13 +22,15 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.Transform;
 
+import ru.boomearo.gamecontrol.objects.IGameArena;
+import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
+import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntPlayer.IPlayerType;
 import ru.boomearo.tntrun.objects.region.IRegion;
-import ru.boomearo.tntrun.objects.state.IGameState;
 import ru.boomearo.tntrun.objects.state.WaitingState;
 
-public class Arena implements ConfigurationSerializable {
+public class TntArena implements IGameArena, ConfigurationSerializable {
 
     private final String name;
     
@@ -43,12 +45,12 @@ public class Arena implements ConfigurationSerializable {
     private final Location arenaCenter;
     
     private final Clipboard clipboard;
-    
-    private volatile IGameState state = new WaitingState();
+ 
+    private volatile IGameState state = new WaitingState(this);
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
-    public Arena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, List<Location> spawnPoints, Location arenaCenter, Clipboard clipboard) {
+    public TntArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, List<Location> spawnPoints, Location arenaCenter, Clipboard clipboard) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
@@ -60,8 +62,44 @@ public class Arena implements ConfigurationSerializable {
         this.clipboard = clipboard;
     }
     
+    @Override
     public String getName() {
         return this.name;
+    }
+    
+    @Override
+    public TntPlayer getGamePlayer(String name) {
+        return this.players.get(name);
+    }
+    
+    @Override
+    public Collection<TntPlayer> getAllPlayers() {
+        return this.players.values();
+    }
+    
+    @Override
+    public TntRunManager getManager() {
+        return TntRun.getInstance().getTntRunManager();
+    }
+    
+    @Override
+    public IGameState getState() {
+        return this.state;
+    }
+    
+    @Override
+    public void regen() {
+        try {
+            Location loc = this.arenaCenter;
+            EditSession editSession = this.clipboard.paste(FaweAPI.getWorld(this.world.getName()), BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), true, true, (Transform) null);
+            editSession.flushQueue();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            setGameState(new WaitingState(this));
+        }
     }
     
     public int getMinPlayers() {
@@ -105,7 +143,7 @@ public class Arena implements ConfigurationSerializable {
         this.state = state;
         
         //Инициализируем новое
-        this.state.initState(this);
+        this.state.initState();
     }
     
     public void addPlayer(TntPlayer player) {
@@ -114,24 +152,6 @@ public class Arena implements ConfigurationSerializable {
     
     public void removePlayer(String name) {
         this.players.remove(name);
-    }
-    
-    public Collection<TntPlayer> getAllPlayers() {
-        return this.players.values();
-    }
-    
-    public void regenArena() {
-        try {
-            Location loc = this.arenaCenter;
-            EditSession editSession = this.clipboard.paste(FaweAPI.getWorld(this.world.getName()), BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), true, true, (Transform) null);
-            editSession.flushQueue();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            setGameState(new WaitingState());
-        }
     }
     
     public void sendMessages(String msg) {
@@ -200,7 +220,7 @@ public class Arena implements ConfigurationSerializable {
     }
     
     @SuppressWarnings("unchecked")
-    public static Arena deserialize(Map<String, Object> args) {
+    public static TntArena deserialize(Map<String, Object> args) {
         String name = null;
         int minPlayers = 2;
         int maxPlayers = 15;
@@ -262,7 +282,8 @@ public class Arena implements ConfigurationSerializable {
             e.printStackTrace();
         }
         
-        return new Arena(name, minPlayers, maxPlayers, timeLimit, world, region, spawnPoints, arenaCenter, cb);
+        return new TntArena(name, minPlayers, maxPlayers, timeLimit, world, region, spawnPoints, arenaCenter, cb);
     }
+
 
 }

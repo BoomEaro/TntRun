@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
 import ru.boomearo.tntrun.TntRun;
-import ru.boomearo.tntrun.objects.Arena;
+import ru.boomearo.tntrun.objects.TntArena;
 
 public class ArenaListener implements Listener {
 
@@ -19,7 +19,7 @@ public class ArenaListener implements Listener {
             if (e.getTo() == Material.SAND) {
                 Location loc = e.getBlock().getLocation();
                 
-                for (Arena ar : TntRun.getInstance().getArenaManager().getAllArenas()) {
+                for (TntArena ar : TntRun.getInstance().getTntRunManager().getAllArenas()) {
                     if (ar.getArenaRegion().isInRegion(loc)) {
                         e.setCancelled(true);
                         return;

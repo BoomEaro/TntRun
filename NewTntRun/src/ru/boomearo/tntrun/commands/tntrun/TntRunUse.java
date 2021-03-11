@@ -13,11 +13,13 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.regions.Region;
 
+import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
+import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.commands.CmdInfo;
-import ru.boomearo.tntrun.exceptions.TntRunException;
-import ru.boomearo.tntrun.managers.ArenaManager;
-import ru.boomearo.tntrun.objects.Arena;
+import ru.boomearo.tntrun.managers.TntRunManager;
+import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
 import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
 
@@ -49,9 +51,9 @@ public class TntRunUse {
         spawnPoints.add(plLoc);
 
         try {
-            Arena newArena = new Arena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), spawnPoints, pl.getLocation(), null);
+            TntArena newArena = new TntArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), spawnPoints, pl.getLocation(), null);
             
-            ArenaManager am = TntRun.getInstance().getArenaManager();
+            TntRunManager am = TntRun.getInstance().getTntRunManager();
             am.addArena(newArena);
 
             am.saveArenas();
@@ -78,17 +80,20 @@ public class TntRunUse {
         Player pl = (Player) cs;
 
         try {
-            TntRun.getInstance().getArenaManager().joinArena(pl, new PlayingPlayer(), arena);
+            GameControl.getInstance().getGameManager().joinGame(pl, TntRun.class, arena);
             
             pl.sendMessage("Вы присоединились к арене " + arena + "!");
         } 
-        catch (TntRunException e) {
-            pl.sendMessage(e.getMessage());
+        catch (PlayerGameException e) {
+            pl.sendMessage("Ошибка: " + e.getMessage());
         }
-        
+        catch (ConsoleGameException e) {
+            e.printStackTrace();
+            pl.sendMessage("Произошла ошибка, сообщите администрации!");
+        }
         return true;
     }
-    
+        
     @CmdInfo(name = "leave", description = "Покинуть игру.", usage = "/tntrun leave", permission = "")
     public boolean leave(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
@@ -101,12 +106,29 @@ public class TntRunUse {
         Player pl = (Player) cs;
 
         try {
-            TntRun.getInstance().getArenaManager().leaveArena(pl);
+            GameControl.getInstance().getGameManager().leaveGame(pl);
             
             pl.sendMessage("Вы покинули игру!");
         } 
-        catch (TntRunException e) {
-            pl.sendMessage(e.getMessage());
+        catch (PlayerGameException e) {
+            pl.sendMessage("Ошибка: " + e.getMessage());
+        }
+        catch (ConsoleGameException e) {
+            e.printStackTrace();
+            pl.sendMessage("Произошла ошибка, сообщите администрации!");
+        }
+        
+        return true;
+    }
+    
+    @CmdInfo(name = "list", description = "Показать все арены.", usage = "/tntrun list", permission = "")
+    public boolean list(CommandSender cs, String[] args) {
+        if (args.length < 0 || args.length > 0) {
+            return false;
+        }
+        
+        for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
+            cs.sendMessage("Арена: " + arena.getName() + ". Статус: " + arena.getGameState().getName() + ". Игроков: " + arena.getAllPlayersType(PlayingPlayer.class).size());
         }
         
         return true;

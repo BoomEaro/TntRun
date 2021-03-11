@@ -1,27 +1,41 @@
 package ru.boomearo.tntrun.objects.state;
 
-import org.bukkit.Bukkit;
-
-import ru.boomearo.tntrun.TntRun;
-import ru.boomearo.tntrun.objects.Arena;
+import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 
-public class RegenState implements IGameState {
-
+public class RegenState implements IGameState, SpectatorFirst {
+    
+    private final TntArena arena;
+    
+    public RegenState(TntArena arena) {
+        this.arena = arena;
+    }
+    
     @Override
-    public void initState(Arena arena) {
-        arena.sendMessages("Начинается регенерация..");
+    public String getName() {
+        return "Регенерация карты";
+    }
+    
+    @Override
+    public TntArena getArena() {
+        return this.arena;
+    }
+    
+    @Override
+    public void initState() {
+        this.arena.sendMessages("Начинается регенерация..");
         
-        Bukkit.getScheduler().runTaskAsynchronously(TntRun.getInstance(), () -> {
-            arena.regenArena();
-        });
+        //Добавляем регенерацию в очередь.
+        GameControl.getInstance().getGameManager().queueRegenArena(this.arena);
     }
     
     
     @Override
-    public void autoUpdateHandler(Arena arena) {
-        for (TntPlayer tp : arena.getAllPlayers()) {
-            if (!arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+    public void autoUpdateHandler() {
+        for (TntPlayer tp : this.arena.getAllPlayers()) {
+            if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
                 tp.getPlayerType().preparePlayer(tp);
             }
         }

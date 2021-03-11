@@ -3,6 +3,7 @@ package ru.boomearo.tntrun.runnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -10,12 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.NumberConversions;
 
+import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
-import ru.boomearo.tntrun.objects.Arena;
+import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
-import ru.boomearo.tntrun.objects.state.IGameState;
 import ru.boomearo.tntrun.objects.state.RunningState;
+import ru.boomearo.tntrun.objects.state.RunningState.BlockOwner;
 
 public class ArenasRunnable extends BukkitRunnable {
     
@@ -32,11 +34,11 @@ public class ArenasRunnable extends BukkitRunnable {
     
     @Override
     public void run() {
-        for (Arena arena : TntRun.getInstance().getArenaManager().getAllArenas()) {
+        for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
             
             IGameState state = arena.getGameState();
             
-            state.autoUpdateHandler(arena);
+            state.autoUpdateHandler();
             
             if (state instanceof RunningState) {
                 RunningState rs = (RunningState) state;
@@ -45,14 +47,14 @@ public class ArenasRunnable extends BukkitRunnable {
                     Player pl = tp.getPlayer();
                     //Если игрок внутри арены
                     if (arena.getArenaRegion().isInRegion(pl.getLocation())) {
-                        destroyBlock(pl.getLocation(), arena, rs);
+                        destroyBlock(pl.getLocation(), arena, tp.getName(), rs);
                     }
                 }
             }
         }
     }
 
-    private static void destroyBlock(Location loc, Arena arena, RunningState rs) {
+    private static void destroyBlock(Location loc, TntArena arena, String owner, RunningState rs) {
         int y = loc.getBlockY() + 1;
         Block block = null;
         for (int i = 0; i <= SCAN_DEPTH; i++) {
@@ -67,9 +69,9 @@ public class ArenasRunnable extends BukkitRunnable {
             final Block fBlock = block;
             Material m = fBlock.getType();
             if (m == Material.SAND || m == Material.RED_SAND) {
-                Material mat = rs.getBlockByLocation(fBlock.getLocation());
-                if (mat == null) {
-                    rs.addBlock(fBlock);
+                BlockOwner bo = rs.getBlockByLocation(fBlock.getLocation());
+                if (bo == null) {
+                    rs.addBlock(fBlock, owner);
                     
                     Bukkit.getScheduler().runTaskLater(TntRun.getInstance(), () -> {
                         
@@ -86,6 +88,7 @@ public class ArenasRunnable extends BukkitRunnable {
     private static void removeGLBlocks(Block block) {
         //block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 1, 1, 1, 1, 1, block.getBlockData());
         //block.setType(Material.AIR);
+        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_SAND_BREAK, 1, 1);
         block = block.getRelative(BlockFace.DOWN);
         block.setType(Material.AIR);
     }

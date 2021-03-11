@@ -1,21 +1,39 @@
 package ru.boomearo.tntrun.objects.state;
 
-import ru.boomearo.tntrun.objects.Arena;
+import ru.boomearo.gamecontrol.objects.states.ICountable;
+import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
 import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
 
 public class EndingState implements IGameState, ICountable {
 
+    private final TntArena arena;
+    
     private int count = 10;
     
     private int cd = 20;
     
+    public EndingState(TntArena arena) {
+        this.arena = arena;
+    }
+    
     @Override
-    public void initState(Arena arena) {
-        arena.sendMessages("Конец игры!");
+    public String getName() {
+        return "Конец игры";
+    }
+    
+    @Override
+    public TntArena getArena() {
+        return this.arena;
+    }
+    
+    @Override
+    public void initState() {
+        this.arena.sendMessages("Конец игры!");
         
-        for (TntPlayer tp : arena.getAllPlayers()) {
+        for (TntPlayer tp : this.arena.getAllPlayers()) {
             if (tp.getPlayerType() instanceof PlayingPlayer) {
                 tp.setPlayerType(new LosePlayer());
             }
@@ -24,22 +42,32 @@ public class EndingState implements IGameState, ICountable {
     }
     
     @Override
-    public void autoUpdateHandler(Arena arena) {
-        for (TntPlayer tp : arena.getAllPlayers()) {
-            if (!arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+    public void autoUpdateHandler() {
+        for (TntPlayer tp : this.arena.getAllPlayers()) {
+            if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
                 tp.getPlayerType().preparePlayer(tp);
             }
         }
         
-        handleCount(arena);
+        handleCount(this.arena);
     }
     
-    private void handleCount(Arena arena) {
+    @Override
+    public int getCount() {
+        return this.count;
+    }
+
+    @Override
+    public void setCount(int count) {
+        this.count = count;
+    }
+    
+    private void handleCount(TntArena arena) {
         if (this.cd <= 0) {
             this.cd = 20;
             
             if (this.count <= 0) {
-                arena.setGameState(new RegenState());
+                arena.setGameState(new RegenState(arena));
                 return;
             }
             
@@ -50,17 +78,6 @@ public class EndingState implements IGameState, ICountable {
             return;
         }
         this.cd--;
-    }
-
-
-    @Override
-    public int getCount() {
-        return this.count;
-    }
-
-    @Override
-    public void setCount(int count) {
-        this.count = count;
     }
 
 

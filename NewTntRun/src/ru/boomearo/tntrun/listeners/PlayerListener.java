@@ -9,33 +9,51 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import ru.boomearo.tntrun.TntRun;
-import ru.boomearo.tntrun.exceptions.TntRunException;
 import ru.boomearo.tntrun.objects.TntPlayer;
+import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
 
 public class PlayerListener implements Listener {
-
-    @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent e) {
-        Player pl = e.getPlayer();
-        
-        try {
-            TntRun.getInstance().getArenaManager().leaveArena(pl);
-        } 
-        catch (TntRunException e1) {}
-    }
     
     @EventHandler
     public void onPlayerDeathEvent(PlayerDeathEvent e) {
         Player pl = e.getEntity();
         
-        try {
-            TntRun.getInstance().getArenaManager().leaveArena(pl);
-        } 
-        catch (TntRunException e1) {}
+        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
+        if (tp != null) {
+            LosePlayer lp = new LosePlayer();
+            tp.setPlayerType(lp);
+            lp.preparePlayer(tp);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerRespawnEvent(PlayerRespawnEvent e) {
+        Player pl = e.getPlayer();
+        
+        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
+        if (tp != null) {
+            e.setRespawnLocation(tp.getArena().getArenaCenter());
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent e) {
+        Player pl = e.getPlayer();
+        
+        String msg = e.getMessage();
+        if (msg.equalsIgnoreCase("/tntrun leave") || msg.equalsIgnoreCase("/tr leave")) {
+            return;
+        }
+        
+        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
+        if (tp != null) {
+            e.setCancelled(true);
+            pl.sendMessage("Вы не можете в игре использовать команды!");
+        }
     }
     
     @EventHandler
@@ -44,7 +62,7 @@ public class PlayerListener implements Listener {
         if (en instanceof Player) {
             Player pl = (Player) en;
             
-            TntPlayer tp = TntRun.getInstance().getArenaManager().getPlayerByName(pl.getName());
+            TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
             if (tp != null) {
                 e.setCancelled(true);
             }
@@ -54,7 +72,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
         Player pl = e.getPlayer();
-        TntPlayer tp = TntRun.getInstance().getArenaManager().getPlayerByName(pl.getName());
+        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {
             e.setCancelled(true);
         }
@@ -63,27 +81,19 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent e) {
         Player pl = e.getPlayer();
-        TntPlayer tp = TntRun.getInstance().getArenaManager().getPlayerByName(pl.getName());
+        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {
             e.setCancelled(true);
         }
     }
     
-    @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent e) {
-        Player pl = e.getPlayer();
-        TntPlayer tp = TntRun.getInstance().getArenaManager().getPlayerByName(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
-        }
-    }
     
     @EventHandler
     public void onFoodLevelChangeEvent(FoodLevelChangeEvent e) {
         Entity en = e.getEntity();
         if (en instanceof Player) {
             Player pl = (Player) en;
-            TntPlayer tp = TntRun.getInstance().getArenaManager().getPlayerByName(pl.getName());
+            TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
             if (tp != null) {
                 e.setCancelled(true);
             }

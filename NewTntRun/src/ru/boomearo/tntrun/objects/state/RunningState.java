@@ -8,45 +8,60 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import ru.boomearo.tntrun.objects.Arena;
+import ru.boomearo.gamecontrol.objects.states.ICountable;
+import ru.boomearo.gamecontrol.objects.states.IRunningState;
+import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.TntPlayer.IPlayerType;
 import ru.boomearo.tntrun.objects.TntPlayer.PlayingPlayer;
 import ru.boomearo.tntrun.objects.TntPlayer.LosePlayer;
 
-public class RunningState implements IGameState, ICountable, AllowSpectators {
+public class RunningState implements IRunningState, ICountable, SpectatorFirst {
 
+    private final TntArena arena;
+    
     private int count;
 
     private int cd = 20;
     
-    private final Map<String, Material> removedBlocks = new HashMap<String, Material>();
+    private final Map<String, BlockOwner> removedBlocks = new HashMap<String, BlockOwner>();
     
-    public RunningState(int count) {
+    public RunningState(TntArena arena, int count) {
+        this.arena = arena;
         this.count = count;
     }
     
     @Override
-    public void initState(Arena arena) {
-        //Подготавливаем всех игроков (например тп на точку возрождения)
-        for (TntPlayer tp : arena.getAllPlayers()) {
-            tp.getPlayerType().preparePlayer(tp);
-        }
-        
-        arena.sendMessages("Игра началась!");
+    public String getName() {
+        return "Идет игра";
+    }
+
+    @Override
+    public TntArena getArena() {
+        return this.arena;
     }
     
     @Override
-    public void autoUpdateHandler(Arena arena) {
-        for (TntPlayer tp : arena.getAllPlayers()) {
-            if (!arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
-                IPlayerType type = tp.getPlayerType();
-                if (type instanceof PlayingPlayer) {
+    public void initState() {
+        //Подготавливаем всех игроков (например тп на точку возрождения)
+        for (TntPlayer tp : this.arena.getAllPlayers()) {
+            tp.getPlayerType().preparePlayer(tp);
+        }
+        
+        this.arena.sendMessages("Игра началась!");
+    }
+    
+    @Override
+    public void autoUpdateHandler() {
+        for (TntPlayer tp : this.arena.getAllPlayers()) {
+            
+            if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+                if (tp.getPlayerType() instanceof PlayingPlayer) {
+                    PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
                     tp.setPlayerType(new LosePlayer());
                     
-                    arena.sendMessages("Игрок " + tp.getName() + " проиграл!");
+                    this.arena.sendMessages("Игрок " + tp.getName() + " свалился с арены из-за игрока " + pp.getKiller());
                     
-                    Collection<TntPlayer> win = arena.getAllPlayersType(PlayingPlayer.class);
+                    Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
                     if (win.size() == 1) {
                         TntPlayer winner = null;
                         for (TntPlayer w : win) {
@@ -55,34 +70,54 @@ public class RunningState implements IGameState, ICountable, AllowSpectators {
                         }
                         if (winner != null) {
                             winner.setPlayerType(new LosePlayer());
-                            arena.sendMessages("Игрок " + winner.getName() + " победил!");
-                            arena.setGameState(new EndingState());
+                            this.arena.sendMessages("Игрок " + winner.getName() + " победил!");
+                            this.arena.setGameState(new EndingState(this.arena));
                             return;
                         }
                     }
                 }
                 
-                type.preparePlayer(tp);
+                tp.getPlayerType().preparePlayer(tp);
+            }
+            
+
+            if (tp.getPlayerType() instanceof PlayingPlayer) {
+                PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
+                
+                BlockOwner bo = this.removedBlocks.get(convertLocToString(tp.getPlayer().getLocation()));
+                if (bo != null) {
+                    pp.setKiller(bo.getName());
+                }
             }
         }
         
         //Играть одним низя
-        if (arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
-            arena.sendMessages("Не достаточно игроков для игры!");
-            arena.setGameState(new EndingState());
+        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
+            this.arena.sendMessages("Не достаточно игроков для игры!");
+            this.arena.setGameState(new EndingState(this.arena));
             return;
         }
         
         handleCount(arena);
     }
     
-    private void handleCount(Arena arena) {
+    @Override
+    public int getCount() {
+        return this.count;
+    }
+    
+    @Override
+    public void setCount(int count) {
+        this.count = count;
+    }
+    
+    private void handleCount(TntArena arena) {
         if (this.cd <= 0) {
             this.cd = 20;
             
             if (this.count <= 0) {
                 arena.sendMessages("Время вышло! Ничья!");
-                arena.setGameState(new EndingState());
+                arena.setGameState(new EndingState(this.arena));
                 return;
             }
             
@@ -96,28 +131,34 @@ public class RunningState implements IGameState, ICountable, AllowSpectators {
         }
         this.cd--;
     }
-    
 
-    @Override
-    public int getCount() {
-        return this.count;
-    }
-    
-    @Override
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public Material getBlockByLocation(Location loc) {
+    public BlockOwner getBlockByLocation(Location loc) {
         return this.removedBlocks.get(convertLocToString(loc));
     }
     
-    public void addBlock(Block block) {
-        this.removedBlocks.put(convertLocToString(block.getLocation()), block.getType());
+    public void addBlock(Block block, String owner) {
+        this.removedBlocks.put(convertLocToString(block.getLocation()), new BlockOwner(block.getType(), owner));
     }
     
     public static String convertLocToString(Location loc) {
         return loc.getBlockX() + "|" + loc.getBlockY() + "|" +  loc.getBlockZ();
     }
 
+    public static class BlockOwner {
+        private final Material mat;
+        private final String owner;
+        
+        public BlockOwner(Material mat, String owner) {
+            this.mat = mat;
+            this.owner = owner;
+        }
+        
+        public Material getMaterial() {
+            return this.mat;
+        }
+        
+        public String getName() {
+            return this.owner;
+        }
+    }
 }
