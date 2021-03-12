@@ -36,7 +36,7 @@ public final class TntRunManager implements IGameManager {
     
     private final TntRunStatistics stats = new TntRunStatistics();
     
-    public static final String gameNameDys = "§8[§cTntRun§8]";
+    public static final String gameNameDys = "§8[§cTNTRun§8]";
     public static final String prefix = gameNameDys + ": §f";
     
     public static final double winReward = 4;
@@ -48,7 +48,7 @@ public final class TntRunManager implements IGameManager {
 
     @Override
     public String getGameName() {
-        return "TntRun";
+        return "TNTRun";
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class TntRunManager implements IGameManager {
         else {
             type = new PlayingPlayer();
             pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f'!");
-            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §fили §cкоманду /tr leave§f.");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §fили команду §c/tr leave§f.");
             
             if (tmpArena.getAllPlayers().size() < tmpArena.getMinPlayers()) {
                 pl.sendMessage(prefix + "Ожидание §c" + tmpArena.getMinPlayers() + " §fигроков для начала игры...");

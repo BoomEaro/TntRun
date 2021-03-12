@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
@@ -110,9 +111,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                             
                             Vault.addMoney(winner.getName(), reward);
                             
-                            //TODO
-                            //TODO форматировать инфу о жетонах
-                            winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: §c" + reward);
+                            winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: " + GameControl.getFormatedEco(reward));
                             
                             this.arena.setGameState(new EndingState(this.arena));
                             return;

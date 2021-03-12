@@ -32,7 +32,7 @@ public class StartingState implements IGameState, ICountable {
     
     @Override
     public void initState() {
-        this.arena.sendMessages(TntRunManager.prefix + "Набралось достаточно игроков для начала игры!");
+        this.arena.sendMessages(TntRunManager.prefix + "Начинаем игру!");
     }
     
     @Override
