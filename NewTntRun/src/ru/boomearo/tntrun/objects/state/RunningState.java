@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
+import ru.boomearo.gamecontrol.utils.DateUtil;
 import ru.boomearo.gamecontrol.utils.Vault;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
@@ -37,7 +38,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
     
     @Override
     public String getName() {
-        return "Идет игра";
+        return "§aИдет игра";
     }
 
     @Override
@@ -52,14 +53,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             tp.getPlayerType().preparePlayer(tp);
         }
         
-        this.arena.sendMessages("Игра началась!");
+        this.arena.sendMessages(TntRunManager.prefix + "Игра началась. Удачи!");
     }
     
     @Override
     public void autoUpdateHandler() {
         //Играть одним низя
         if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
-            this.arena.sendMessages("Не достаточно игроков для игры!");
+            this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для игры! Игра прервана.");
             this.arena.setGameState(new EndingState(this.arena));
             return;
         }
@@ -80,14 +81,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     
                     if (pp.getKiller() != null) {
                         if (tp.getName().equals(pp.getKiller())) {
-                            this.arena.sendMessages("Игрок " + tp.getName() + " проиграл, свалившись в свою же яму!");
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в свою же яму!");
                         }
                         else {
-                            this.arena.sendMessages("Игрок " + tp.getName() + " проиграл, свалившись в яму игрока " + pp.getKiller());
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в яму игрока §c" + pp.getKiller());
                         }
                     }
                     else {
-                        this.arena.sendMessages("Игрок " + tp.getName() + " проиграл, зайдя за границы игры.");
+                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, зайдя за границы игры.");
                     }
                     
                     Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
@@ -99,7 +100,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                         }
                         if (winner != null) {
                             winner.setPlayerType(new LosePlayer());
-                            this.arena.sendMessages("Игрок " + winner.getName() + " победил!");
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + winner.getName() + " §fпобедил!");
                             
                             //Добавляем единицу в статистику побед
                             trs.addStats(TntStatsType.Wins, winner.getName());
@@ -109,7 +110,9 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                             
                             Vault.addMoney(winner.getName(), reward);
                             
-                            winner.getPlayer().sendMessage("Ваша награда за победу: " + reward);
+                            //TODO
+                            //TODO форматировать инфу о жетонах
+                            winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: §c" + reward);
                             
                             this.arena.setGameState(new EndingState(this.arena));
                             return;
@@ -150,7 +153,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             this.cd = 20;
             
             if (this.count <= 0) {
-                arena.sendMessages("Время вышло! Ничья!");
+                arena.sendMessages(TntRunManager.prefix + "Время вышло! §cНичья!");
                 arena.setGameState(new EndingState(this.arena));
                 return;
             }
@@ -158,11 +161,11 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             arena.sendLevels(this.count);
             
             if (this.count <= 10) {
-                arena.sendMessages("Игра закончится через " + this.count);
+                arena.sendMessages(TntRunManager.prefix + "Игра закончится через §c" + DateUtil.formatedTime(this.count, false));
             }
             else {
                 if ((this.count % 30) == 0){
-                    arena.sendMessages("Игра закончится через " + this.count);
+                    arena.sendMessages(TntRunManager.prefix + "Игра закончится через §c" + DateUtil.formatedTime(this.count, false));
                 }
             }
             

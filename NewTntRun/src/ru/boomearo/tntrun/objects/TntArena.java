@@ -23,11 +23,11 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.Transform;
 
 import ru.boomearo.gamecontrol.objects.IGameArena;
+import ru.boomearo.gamecontrol.objects.IRegion;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
-import ru.boomearo.tntrun.objects.region.IRegion;
 import ru.boomearo.tntrun.objects.state.WaitingState;
 import ru.boomearo.tntrun.utils.RandomUtil;
 
@@ -138,11 +138,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     public Clipboard getClipboard() {
         return this.clipboard;
     }
-    
-    public IGameState getGameState() {
-        return this.state;
-    }
-    
+
     public void setGameState(IGameState state) {
         //Устанавливаем новое
         this.state = state;

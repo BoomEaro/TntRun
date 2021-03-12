@@ -82,11 +82,11 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().joinGame(pl, TntRun.class, arena);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage("Ошибка: " + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "Ошибка: " + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
-            pl.sendMessage("Произошла ошибка, сообщите администрации!");
+            pl.sendMessage(TntRunManager.prefix + "Произошла ошибка, сообщите администрации!");
         }
         return true;
     }
@@ -106,24 +106,27 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().leaveGame(pl);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage("Ошибка: " + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "Ошибка: " + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
-            pl.sendMessage("Произошла ошибка, сообщите администрации!");
+            pl.sendMessage(TntRunManager.prefix + "Произошла ошибка, сообщите администрации!");
         }
-        
         return true;
     }
     
-    @CmdInfo(name = "list", description = "Показать все арены.", usage = "/tntrun list", permission = "")
+    @CmdInfo(name = "list", description = "Показать список всех доступных арен.", usage = "/tntrun list", permission = "")
     public boolean list(CommandSender cs, String[] args) {
         if (args.length < 0 || args.length > 0) {
             return false;
         }
         
+        final String sep = TntRunManager.prefix + "§8============================";
         for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
-            cs.sendMessage("Арена: " + arena.getName() + ". Статус: " + arena.getGameState().getName() + ". Игроков: " + arena.getAllPlayers().size());
+            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§f'");
+            cs.sendMessage(TntRunManager.prefix + " Статус: " + arena.getState().getName());
+            cs.sendMessage(TntRunManager.prefix + " Игроков: §c" + arena.getAllPlayers().size());
+            cs.sendMessage(sep);
         }
         
         return true;

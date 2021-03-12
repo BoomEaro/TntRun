@@ -2,6 +2,8 @@ package ru.boomearo.tntrun.objects.state;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
@@ -20,7 +22,7 @@ public class StartingState implements IGameState, ICountable {
     
     @Override
     public String getName() {
-        return "Начало игры";
+        return "§aНачало игры";
     }
     
     @Override
@@ -30,7 +32,7 @@ public class StartingState implements IGameState, ICountable {
     
     @Override
     public void initState() {
-        this.arena.sendMessages("Набралось достаточно игроков, начинаем игру!");
+        this.arena.sendMessages(TntRunManager.prefix + "Набралось достаточно игроков для начала игры!");
     }
     
     @Override
@@ -73,7 +75,7 @@ public class StartingState implements IGameState, ICountable {
                 
                 //Если игроков не достаточно для игры, то возвращаемся в ожидание
                 if (this.arena.getAllPlayersType(PlayingPlayer.class).size() < this.arena.getMinPlayers()) {
-                    this.arena.sendMessages("Не достаточно игроков для старта!");
+                    this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для старта!");
                     this.arena.setGameState(new WaitingState(this.arena));
                     return;
                 }
@@ -86,11 +88,11 @@ public class StartingState implements IGameState, ICountable {
             arena.sendLevels(this.count);
             
             if (this.count <= 5) {
-                arena.sendMessages("Игра начнется через " + this.count);
+                arena.sendMessages(TntRunManager.prefix + "Игра начнется через §c" + DateUtil.formatedTime(this.count, false));
             }
             else {
                 if ((this.count % 5) == 0){
-                    arena.sendMessages("Игра начнется через " + this.count);
+                    arena.sendMessages(TntRunManager.prefix + "Игра начнется через §c" + DateUtil.formatedTime(this.count, false));
                 }
             }
             

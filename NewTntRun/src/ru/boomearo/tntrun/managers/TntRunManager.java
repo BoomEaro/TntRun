@@ -36,6 +36,9 @@ public final class TntRunManager implements IGameManager {
     
     private final TntRunStatistics stats = new TntRunStatistics();
     
+    public static final String gameNameDys = "§8[§cTntRun§8]";
+    public static final String prefix = gameNameDys + ": §f";
+    
     public static final double winReward = 4;
 
     public TntRunManager() {
@@ -50,7 +53,7 @@ public final class TntRunManager implements IGameManager {
 
     @Override
     public String getGameDisplayName() {
-        return "TntRun";
+        return gameNameDys;
     }
 
     @Override
@@ -71,30 +74,31 @@ public final class TntRunManager implements IGameManager {
 
         TntArena tmpArena = this.arenas.get(arena);
         if (tmpArena == null) {
-            throw new PlayerGameException("Арена " + arena + " не найдена!");
+            throw new PlayerGameException("Арена §f'§c" + arena + "§f' не найдена!");
         }
 
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
-            throw new PlayerGameException("Арена " + arena + " переполнена!");
+            throw new PlayerGameException("Арена §f'§c" + arena + "§f' переполнена!");
         }
         
-        IGameState state = tmpArena.getGameState();
+        IGameState state = tmpArena.getState();
 
         IPlayerType type;
         
         //Если статус игры реализует это, значит добавляем игрока в наблюдатели сначала
         if (state instanceof SpectatorFirst) {
             type = new LosePlayer();
-            pl.sendMessage("Вы присоединились к арене " + arena + " как наблюдатель.");
-            pl.sendMessage("Чтобы покинуть игру, используйте несколько раз кнопку '1' или телепортируйтесь к любому игроку используя возможность наблюдателя.");
+            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f' как наблюдатель.");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз §cкнопку §f'§c1§f' или §cтелепортируйтесь к любому игроку §fиспользуя возможность наблюдателя.");
         }
         else {
             type = new PlayingPlayer();
-            pl.sendMessage("Вы присоединились к арене " + arena + "!");
+            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f'!");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §fили §cкоманду /tr leave§f.");
             
             if (tmpArena.getAllPlayers().size() < tmpArena.getMinPlayers()) {
-                pl.sendMessage("Ожидание " + tmpArena.getMinPlayers() + " игроков для начала игры...");
+                pl.sendMessage(prefix + "Ожидание §c" + tmpArena.getMinPlayers() + " §fигроков для начала игры...");
             }
         }
 
@@ -115,7 +119,7 @@ public final class TntRunManager implements IGameManager {
             if (tpa.getName().equals(pl.getName())) {
                 continue;
             }
-            tpa.getPlayer().sendMessage("Игрок " + pl.getName() + " присоединился к игре!");
+            tpa.getPlayer().sendMessage(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре!");
         }
         
         return newTp;
@@ -129,7 +133,7 @@ public final class TntRunManager implements IGameManager {
 
         TntPlayer tmpPlayer = this.players.get(pl.getName());
         if (tmpPlayer == null) {
-            throw new PlayerGameException("Игрок не в игре!");
+            throw new ConsoleGameException("Игрок не в игре!");
         }
 
         TntArena arena = tmpPlayer.getArena();
@@ -160,13 +164,13 @@ public final class TntRunManager implements IGameManager {
         
         pl.getInventory().clear();
         
-        pl.sendMessage("Вы покинули игру!");
+        pl.sendMessage(prefix + "Вы покинули игру!");
         
         for (TntPlayer tpa : arena.getAllPlayers()) {
             if (tpa.getName().equals(pl.getName())) {
                 continue;
             }
-            tpa.getPlayer().sendMessage("Игрок " + pl.getName() + " покинул игру!");
+            tpa.getPlayer().sendMessage(prefix + "Игрок §c" + pl.getName() + " §fпокинул игру!");
         }
     }
     

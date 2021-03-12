@@ -36,7 +36,7 @@ public class ArenasRunnable extends BukkitRunnable {
     public void run() {
         for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
             
-            IGameState state = arena.getGameState();
+            IGameState state = arena.getState();
             
             state.autoUpdateHandler();
             
@@ -75,7 +75,7 @@ public class ArenasRunnable extends BukkitRunnable {
                     
                     Bukkit.getScheduler().runTaskLater(TntRun.getInstance(), () -> {
                         
-                        if (arena.getGameState() instanceof RunningState) {
+                        if (arena.getState() instanceof RunningState) {
                             //blockstodestroy.remove(fblock);
                             removeGLBlocks(fBlock);
                         }

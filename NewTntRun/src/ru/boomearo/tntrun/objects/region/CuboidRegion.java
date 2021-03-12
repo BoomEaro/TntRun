@@ -9,6 +9,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import com.sk89q.worldedit.math.BlockVector3;
 
+import ru.boomearo.gamecontrol.objects.IRegion;
+
 public class CuboidRegion implements IRegion, ConfigurationSerializable {
 
     private final Location loc1;

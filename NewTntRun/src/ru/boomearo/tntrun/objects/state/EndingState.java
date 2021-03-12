@@ -2,6 +2,8 @@ package ru.boomearo.tntrun.objects.state;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
@@ -21,7 +23,7 @@ public class EndingState implements IGameState, ICountable {
     
     @Override
     public String getName() {
-        return "Конец игры";
+        return "§cКонец игры";
     }
     
     @Override
@@ -31,7 +33,7 @@ public class EndingState implements IGameState, ICountable {
     
     @Override
     public void initState() {
-        this.arena.sendMessages("Конец игры!");
+        this.arena.sendMessages(TntRunManager.prefix + "Игра закончена!");
         
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             if (tp.getPlayerType() instanceof PlayingPlayer) {
@@ -73,7 +75,7 @@ public class EndingState implements IGameState, ICountable {
                 return;
             }
             
-            arena.sendMessages("Игра закончена! Следующая игра начнется через " + this.count);
+            arena.sendMessages(TntRunManager.prefix + "Игра закончена! Следующая игра начнется через §c" + DateUtil.formatedTime(this.count, false));
             
             this.count--;
             

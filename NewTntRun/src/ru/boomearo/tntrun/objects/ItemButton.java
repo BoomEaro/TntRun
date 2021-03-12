@@ -50,10 +50,10 @@ public enum ItemButton {
     }
     
     private static ItemStack createLeaveButton() {
-        ItemStack item = new ItemStack(Material.REDSTONE_TORCH, 1);
+        ItemStack item = new ItemStack(Material.MAGMA_CREAM, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Выход");
-        meta.setLore(Arrays.asList("Кликните чтобы покинуть игру."));
+        meta.setDisplayName("§cПокинуть игру");
+        meta.setLore(Arrays.asList("§fКликните чтобы покинуть игру."));
         meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
         meta.addItemFlags(ItemFlag.values());
         item.setItemMeta(meta);

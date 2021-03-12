@@ -38,8 +38,6 @@ public class TntRun extends JavaPlugin {
     private Essentials ess = null;
     private EssentialsSpawn essSpawn = null;
     
-    public static final String prefix = "§8[§cTntRun§8]: §f";
-    
     private static TntRun instance = null;
 
     public void onEnable() {
@@ -107,7 +105,7 @@ public class TntRun extends JavaPlugin {
         }
 
         for (TntArena ar : this.arenaManager.getAllArenas()) {
-            IGameState state = ar.getGameState();
+            IGameState state = ar.getState();
             //Если выключение сервера застал в момент регенерации, то ничего не делаем
             if (state instanceof RegenState) {
                 continue;

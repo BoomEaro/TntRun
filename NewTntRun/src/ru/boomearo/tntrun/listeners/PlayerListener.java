@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import ru.boomearo.tntrun.TntRun;
+import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 
@@ -55,7 +56,7 @@ public class PlayerListener implements Listener {
         TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {
             e.setCancelled(true);
-            pl.sendMessage("Вы не можете в игре использовать команды!");
+            pl.sendMessage(TntRunManager.prefix + "Вы не можете использовать эти команды в игре!");
         }
     }
     

@@ -1,6 +1,7 @@
 package ru.boomearo.tntrun.objects.state;
 
 import ru.boomearo.gamecontrol.objects.states.IWaitingState;
+import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
@@ -16,7 +17,7 @@ public class WaitingState implements IWaitingState {
     
     @Override
     public String getName() {
-        return "Ожидание игроков";
+        return "§6Ожидание игроков";
     }
     
     @Override
@@ -26,7 +27,7 @@ public class WaitingState implements IWaitingState {
     
     @Override 
     public void initState() {
-        this.arena.sendMessages("Ожидание игроков..");
+        this.arena.sendMessages(TntRunManager.prefix + "Ожидание игроков..");
         
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             //Возвращаем умерших к жизни так сказать.
