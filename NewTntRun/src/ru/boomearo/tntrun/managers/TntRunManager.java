@@ -86,20 +86,16 @@ public final class TntRunManager implements IGameManager {
 
         IPlayerType type;
         
+        boolean isSpec;
+        
         //Если статус игры реализует это, значит добавляем игрока в наблюдатели сначала
         if (state instanceof SpectatorFirst) {
             type = new LosePlayer();
-            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f' как наблюдатель.");
-            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз §cкнопку §f'§c1§f' или §cтелепортируйтесь к любому игроку §fиспользуя возможность наблюдателя.");
+            isSpec = true;
         }
         else {
             type = new PlayingPlayer();
-            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f'!");
-            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §fили команду §c/tr leave§f.");
-            
-            if (tmpArena.getAllPlayers().size() < tmpArena.getMinPlayers()) {
-                pl.sendMessage(prefix + "Ожидание §c" + tmpArena.getMinPlayers() + " §fигроков для начала игры...");
-            }
+            isSpec = false;
         }
 
         //Создаем игрока
@@ -114,8 +110,22 @@ public final class TntRunManager implements IGameManager {
         //Обрабатываем игрока
         type.preparePlayer(newTp);
         
-        
-        tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
+        if (isSpec) {
+            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f' как наблюдатель.");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз §cкнопку §f'§c1§f' или §cтелепортируйтесь к любому игроку §fиспользуя возможность наблюдателя.");
+            
+            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре как наблюдатель!");
+        }
+        else {
+            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f'!");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §fили команду §c/tr leave§f.");
+            
+            if (tmpArena.getAllPlayers().size() < tmpArena.getMinPlayers()) {
+                pl.sendMessage(prefix + "Ожидание §c" + tmpArena.getMinPlayers() + " §fигроков для начала игры...");
+            } 
+            
+            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
+        }
         
         return newTp;
     }
@@ -244,6 +254,6 @@ public final class TntRunManager implements IGameManager {
     }
 
     public static String getRemainPlayersArena(TntArena arena) {
-        return "§8[§6" + arena.getAllPlayers().size() + "§7/§c" + arena.getMaxPlayers() + "§8]";
+        return "§8[§6" + arena.getAllPlayersType(PlayingPlayer.class).size() + "§7/§c" + arena.getMaxPlayers() + "§8]";
     }
 }
