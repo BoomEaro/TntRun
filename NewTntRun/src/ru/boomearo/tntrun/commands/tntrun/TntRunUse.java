@@ -1,7 +1,6 @@
 package ru.boomearo.tntrun.commands.tntrun;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -41,27 +40,78 @@ public class TntRunUse {
         LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         Region re = ls.getSelection(ls.getSelectionWorld());
         if (re == null) {
-            pl.sendMessage("Выделите регион!");
+            pl.sendMessage(TntRunManager.prefix + "Выделите регион!");
             return true;
         }
 
-        List<Location> spawnPoints = new ArrayList<Location>();
-        Location plLoc = pl.getLocation();
-        spawnPoints.add(plLoc);
-
         try {
-            TntArena newArena = new TntArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), spawnPoints, pl.getLocation(), null);
+            TntArena newArena = new TntArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), new ArrayList<Location>(), pl.getLocation(), null);
             
             TntRunManager am = TntRun.getInstance().getTntRunManager();
             am.addArena(newArena);
 
             am.saveArenas();
 
-            pl.sendMessage("Арена " + arena + " успаешно создана!");
+            pl.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§f' успешно создана!");
         }
         catch (Exception e) {
             pl.sendMessage(e.getMessage());
         }
+        
+        return true;
+    }
+    
+    @CmdInfo(name = "addspawnpoint", description = "Добавить указанной арене точку спавна.", usage = "/tntrun addspawnpoint <арена>", permission = "tntrun.admin")
+    public boolean addspawnpoint(CommandSender cs, String[] args) {
+        if (!(cs instanceof Player)) {
+            cs.sendMessage("Данная команда только для игроков.");
+            return true;
+        }
+        if (args.length < 1 || args.length > 1) {
+            return false;
+        }
+        String arena = args[0];
+        Player pl = (Player) cs;
+
+        TntRunManager trm = TntRun.getInstance().getTntRunManager();
+        TntArena ar = trm.getGameArena(arena);
+        if (ar == null) {
+            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§f' не найдена!");
+            return true;
+        }
+        
+        ar.getSpawnPoints().add(pl.getLocation().clone());
+        
+        trm.saveArenas();
+        
+        cs.sendMessage(TntRunManager.prefix + "Спавн поинт успешно добавлен!");
+        
+        return true;
+    }
+    
+    @CmdInfo(name = "clearspawnpoints", description = "Удалить все точки спавна в указанной арене.", usage = "/tntrun cleanspawnpoints <арена>", permission = "tntrun.admin")
+    public boolean clearspawnpoints(CommandSender cs, String[] args) {
+        if (!(cs instanceof Player)) {
+            cs.sendMessage("Данная команда только для игроков.");
+            return true;
+        }
+        if (args.length < 1 || args.length > 1) {
+            return false;
+        }
+        String arena = args[0];
+
+        TntRunManager trm = TntRun.getInstance().getTntRunManager();
+        TntArena ar = trm.getGameArena(arena);
+        if (ar == null) {
+            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§f' не найдена!");
+            return true;
+        }
+        
+        ar.getSpawnPoints().clear();
+        
+        trm.saveArenas();
+        
+        cs.sendMessage(TntRunManager.prefix + "Все точки были сброшены!");
         
         return true;
     }
@@ -82,11 +132,11 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().joinGame(pl, TntRun.class, arena);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(TntRunManager.prefix + "Ошибка: " + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §f" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
-            pl.sendMessage(TntRunManager.prefix + "Произошла ошибка, сообщите администрации!");
+            pl.sendMessage(TntRunManager.prefix + "§cПроизошла ошибка, сообщите администрации!");
         }
         return true;
     }
@@ -106,11 +156,11 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().leaveGame(pl);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(TntRunManager.prefix + "Ошибка: " + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §f" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
-            pl.sendMessage(TntRunManager.prefix + "Произошла ошибка, сообщите администрации!");
+            pl.sendMessage(TntRunManager.prefix + "§cПроизошла ошибка, сообщите администрации!");
         }
         return true;
     }

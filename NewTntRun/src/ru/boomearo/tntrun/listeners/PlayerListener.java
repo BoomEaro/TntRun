@@ -39,7 +39,7 @@ public class PlayerListener implements Listener {
         
         TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {
-            e.setRespawnLocation(tp.getArena().getArenaCenter());
+            e.setRespawnLocation(tp.getArena().getRandomSpawnLocation());
             tp.getPlayerType().preparePlayer(tp);
         }
     }

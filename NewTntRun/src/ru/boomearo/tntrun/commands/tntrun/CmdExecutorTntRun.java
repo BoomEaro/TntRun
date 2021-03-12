@@ -31,6 +31,11 @@ public class CmdExecutorTntRun extends AbstractExecutor {
 	public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
         if (arg3.length == 1) {
             List<String> ss = new ArrayList<String>(Arrays.asList("join", "leave", "list"));
+            if (arg0.hasPermission("tntrun.admin")) {
+                ss.add("createarena");
+                ss.add("addspawnpoint");
+                ss.add("clearspawnpoints");
+            }
             List<String> matches = new ArrayList<>();
             String search = arg3[0].toLowerCase();
             for (String se : ss)
