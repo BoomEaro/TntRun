@@ -13,7 +13,7 @@ public class EndingState implements IGameState, ICountable {
 
     private final TntArena arena;
     
-    private int count = 10;
+    private int count = 5;
     
     private int cd = 20;
     
@@ -71,7 +71,7 @@ public class EndingState implements IGameState, ICountable {
             this.cd = 20;
             
             if (this.count <= 0) {
-                arena.setGameState(new RegenState(arena));
+                arena.setState(new RegenState(arena));
                 return;
             }
             

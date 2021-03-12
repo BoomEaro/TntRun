@@ -115,12 +115,7 @@ public final class TntRunManager implements IGameManager {
         type.preparePlayer(newTp);
         
         
-        for (TntPlayer tpa : tmpArena.getAllPlayers()) {
-            if (tpa.getName().equals(pl.getName())) {
-                continue;
-            }
-            tpa.getPlayer().sendMessage(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре!");
-        }
+        tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
         
         return newTp;
     }
@@ -166,12 +161,8 @@ public final class TntRunManager implements IGameManager {
         
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        for (TntPlayer tpa : arena.getAllPlayers()) {
-            if (tpa.getName().equals(pl.getName())) {
-                continue;
-            }
-            tpa.getPlayer().sendMessage(prefix + "Игрок §c" + pl.getName() + " §fпокинул игру!");
-        }
+        arena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fпокинул игру! " + getRemainPlayersArena(arena), pl.getName());
+        
     }
     
     @Override
@@ -252,4 +243,7 @@ public final class TntRunManager implements IGameManager {
         this.arenas.remove(name);
     }
 
+    public static String getRemainPlayersArena(TntArena arena) {
+        return "§8[§6" + arena.getAllPlayers().size() + "§7/§c" + arena.getMaxPlayers() + "§8]";
+    }
 }

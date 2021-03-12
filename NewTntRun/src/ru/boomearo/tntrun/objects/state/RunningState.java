@@ -62,7 +62,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         //Играть одним низя
         if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
             this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для игры! Игра прервана.");
-            this.arena.setGameState(new EndingState(this.arena));
+            this.arena.setState(new EndingState(this.arena));
             return;
         }
         
@@ -82,14 +82,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     
                     if (pp.getKiller() != null) {
                         if (tp.getName().equals(pp.getKiller())) {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в свою же яму!");
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena));
                         }
                         else {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в яму игрока §c" + pp.getKiller());
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena));
                         }
                     }
                     else {
-                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, зайдя за границы игры.");
+                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena));
                     }
                     
                     Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
@@ -113,7 +113,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                             
                             winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: " + GameControl.getFormatedEco(reward));
                             
-                            this.arena.setGameState(new EndingState(this.arena));
+                            this.arena.setState(new EndingState(this.arena));
                             return;
                         }
                     }
@@ -153,7 +153,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             
             if (this.count <= 0) {
                 arena.sendMessages(TntRunManager.prefix + "Время вышло! §cНичья!");
-                arena.setGameState(new EndingState(this.arena));
+                arena.setState(new EndingState(this.arena));
                 return;
             }
             

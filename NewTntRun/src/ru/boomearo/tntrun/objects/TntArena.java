@@ -103,7 +103,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
             e.printStackTrace();
         }
         finally {
-            setGameState(new WaitingState(this));
+            setState(new WaitingState(this));
         }
     }
     
@@ -139,7 +139,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         return this.clipboard;
     }
 
-    public void setGameState(IGameState state) {
+    public void setState(IGameState state) {
         //Устанавливаем новое
         this.state = state;
         

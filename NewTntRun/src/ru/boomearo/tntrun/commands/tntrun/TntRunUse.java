@@ -122,12 +122,11 @@ public class TntRunUse {
         }
         
         final String sep = TntRunManager.prefix + "§8============================";
+        cs.sendMessage(sep);
         for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
-            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§f'");
-            cs.sendMessage(TntRunManager.prefix + " Статус: " + arena.getState().getName());
-            cs.sendMessage(TntRunManager.prefix + " Игроков: §c" + arena.getAllPlayers().size());
-            cs.sendMessage(sep);
+            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§f'. Статус: " + arena.getState().getName() + "§f. Игроков: " + TntRunManager.getRemainPlayersArena(arena));
         }
+        cs.sendMessage(sep);
         
         return true;
     }

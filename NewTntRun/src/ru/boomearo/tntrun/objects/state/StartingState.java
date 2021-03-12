@@ -47,7 +47,7 @@ public class StartingState implements IGameState, ICountable {
         
         //Если на арене вообще нет игроков то переходим в ожидание. (малоли)
         if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 0) {
-            this.arena.setGameState(new WaitingState(this.arena));
+            this.arena.setState(new WaitingState(this.arena));
             return;
         }
         
@@ -76,12 +76,12 @@ public class StartingState implements IGameState, ICountable {
                 //Если игроков не достаточно для игры, то возвращаемся в ожидание
                 if (this.arena.getAllPlayersType(PlayingPlayer.class).size() < this.arena.getMinPlayers()) {
                     this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для старта!");
-                    this.arena.setGameState(new WaitingState(this.arena));
+                    this.arena.setState(new WaitingState(this.arena));
                     return;
                 }
                 
                 
-                arena.setGameState(new RunningState(arena, arena.getTimeLimit()));
+                arena.setState(new RunningState(arena, arena.getTimeLimit()));
                 return;
             }
             
