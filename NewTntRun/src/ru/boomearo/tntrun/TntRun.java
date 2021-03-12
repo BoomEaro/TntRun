@@ -1,6 +1,7 @@
 package ru.boomearo.tntrun;
 
 import java.io.File;
+import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -12,7 +13,10 @@ import com.earth2me.essentials.spawn.EssentialsSpawn;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 import ru.boomearo.tntrun.commands.tntrun.CmdExecutorTntRun;
+import ru.boomearo.tntrun.database.Sql;
+import ru.boomearo.tntrun.database.sections.SectionStats;
 import ru.boomearo.tntrun.listeners.ArenaListener;
 import ru.boomearo.tntrun.listeners.PlayerButtonListener;
 import ru.boomearo.tntrun.listeners.PlayerListener;
@@ -21,6 +25,8 @@ import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
 import ru.boomearo.tntrun.objects.state.RegenState;
+import ru.boomearo.tntrun.objects.statistics.TntStatsData;
+import ru.boomearo.tntrun.objects.statistics.TntStatsType;
 import ru.boomearo.tntrun.runnable.ArenasRunnable;
 
 public class TntRun extends JavaPlugin {
@@ -55,6 +61,9 @@ public class TntRun extends JavaPlugin {
             this.arenaManager = new TntRunManager();
         }
         
+        loadDataBase();
+        loadDataFromDatabase();
+        
         try {
             GameControl.getInstance().getGameManager().registerGame(this.getClass(), this.arenaManager);
         } 
@@ -80,6 +89,16 @@ public class TntRun extends JavaPlugin {
     
     
     public void onDisable() {
+        try {
+            getLogger().info("Отключаюсь от базы данных");
+            Sql.getInstance().Disconnect();
+            getLogger().info("Успешно отключился от базы данных");
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+            getLogger().info("Не удалось отключиться от базы данных...");
+        }
+        
         try {
             GameControl.getInstance().getGameManager().unregisterGame(this.getClass());
         } 
@@ -118,6 +137,34 @@ public class TntRun extends JavaPlugin {
         return new File(this.getDataFolder(), File.separator + "schematics" + File.separator);
     }
     
+    private void loadDataBase() {
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdir(); 
+
+        }
+        try {
+            for (TntStatsType type : TntStatsType.values()) {
+                Sql.getInstance().createNewDatabaseStatsData(type);
+            }
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadDataFromDatabase() {
+        try {
+            for (TntStatsType type : TntStatsType.values()) {
+                TntStatsData data = this.arenaManager.getStatisticManager().getStatsData(type);
+                for (SectionStats stats : Sql.getInstance().getAllStatsData(type)) {
+                    data.addStatsPlayer(new StatsPlayer(stats.name, stats.value));
+                }
+            }
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
     public static TntRun getInstance() { 
         return instance;

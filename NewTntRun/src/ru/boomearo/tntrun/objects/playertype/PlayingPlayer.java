@@ -6,6 +6,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.ItemButton;
 import ru.boomearo.tntrun.objects.TntArena;
@@ -57,7 +58,7 @@ public class PlayingPlayer implements IPlayerType {
 
         TntArena arena = player.getArena();
         
-        pl.teleport(arena.getRandomSpawnLocation());
+        GameControl.getInstance().asyncTeleport(pl, arena.getRandomSpawnLocation());
     }
     
 }

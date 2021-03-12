@@ -13,12 +13,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.IGameManager;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
-
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
@@ -34,10 +34,13 @@ public final class TntRunManager implements IGameManager {
 
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
+    private final TntRunStatistics stats = new TntRunStatistics();
+    
     public static final double winReward = 4;
 
     public TntRunManager() {
         loadArenas();
+        
     }
 
     @Override
@@ -148,7 +151,7 @@ public final class TntRunManager implements IGameManager {
     private static void handlePlayerLeave(Player pl, TntArena arena) {
         Location loc = TntRun.getInstance().getEssentialsSpawn().getSpawn("default");
         if (loc != null) {
-            pl.teleport(loc);
+            GameControl.getInstance().asyncTeleport(pl, loc);
         }
 
         pl.setGameMode(GameMode.ADVENTURE);
@@ -186,6 +189,12 @@ public final class TntRunManager implements IGameManager {
     public Collection<TntPlayer> getAllPlayers() {
         return this.players.values();
     }
+    
+    @Override
+    public TntRunStatistics getStatisticManager() {
+        return this.stats;
+    }
+
     
     @SuppressWarnings("unchecked")
     public void loadArenas() {
@@ -238,6 +247,5 @@ public final class TntRunManager implements IGameManager {
 
         this.arenas.remove(name);
     }
-
 
 }

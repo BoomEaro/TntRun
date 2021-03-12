@@ -43,6 +43,12 @@ public class StartingState implements IGameState, ICountable {
             }
         }
         
+        //Если на арене вообще нет игроков то переходим в ожидание. (малоли)
+        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 0) {
+            this.arena.setGameState(new WaitingState(this.arena));
+            return;
+        }
+        
         handleCount(this.arena);
 
     }
