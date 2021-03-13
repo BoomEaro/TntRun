@@ -18,6 +18,9 @@ public class SpectatorListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleportEvent(PlayerTeleportEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
         if (e.getCause() == TeleportCause.SPECTATE) {
             Player pl = e.getPlayer();
             TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
@@ -36,6 +39,9 @@ public class SpectatorListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerStartSpectatingEntityEvent(PlayerStartSpectatingEntityEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
         Player pl = e.getPlayer();
         
         TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());

@@ -82,14 +82,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     
                     if (pp.getKiller() != null) {
                         if (tp.getName().equals(pp.getKiller())) {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena));
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §7проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena));
                         }
                         else {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena));
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §7проиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena));
                         }
                     }
                     else {
-                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §fпроиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena));
+                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §7проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena));
                     }
                     
                     Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
@@ -101,7 +101,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                         }
                         if (winner != null) {
                             winner.setPlayerType(new LosePlayer());
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + winner.getName() + " §fпобедил!");
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + winner.getName() + " §7победил!");
                             
                             //Добавляем единицу в статистику побед
                             trs.addStats(TntStatsType.Wins, winner.getName());

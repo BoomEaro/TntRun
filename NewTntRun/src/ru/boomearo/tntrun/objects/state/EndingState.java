@@ -75,7 +75,7 @@ public class EndingState implements IGameState, ICountable {
                 return;
             }
             
-            arena.sendMessages(TntRunManager.prefix + "Игра закончена! Следующая игра начнется через §c" + DateUtil.formatedTime(this.count, false));
+            arena.sendMessages(TntRunManager.prefix + "Следующая игра начнется через §c" + DateUtil.formatedTime(this.count, false));
             
             this.count--;
             

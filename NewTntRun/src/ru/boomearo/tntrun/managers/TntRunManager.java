@@ -37,7 +37,7 @@ public final class TntRunManager implements IGameManager {
     private final TntRunStatistics stats = new TntRunStatistics();
     
     public static final String gameNameDys = "§8[§cTNTRun§8]";
-    public static final String prefix = gameNameDys + ": §f";
+    public static final String prefix = gameNameDys + ": §7";
     
     public static final double winReward = 4;
 
@@ -74,12 +74,12 @@ public final class TntRunManager implements IGameManager {
 
         TntArena tmpArena = this.arenas.get(arena);
         if (tmpArena == null) {
-            throw new PlayerGameException("Арена §f'§c" + arena + "§f' не найдена!");
+            throw new PlayerGameException("Арена §7'§c" + arena + "§7' не найдена!");
         }
 
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
-            throw new PlayerGameException("Арена §f'§c" + arena + "§f' переполнена!");
+            throw new PlayerGameException("Арена §7'§c" + arena + "§7' переполнена!");
         }
         
         IGameState state = tmpArena.getState();
@@ -111,20 +111,20 @@ public final class TntRunManager implements IGameManager {
         type.preparePlayer(newTp);
         
         if (isSpec) {
-            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f' как наблюдатель.");
-            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз §cкнопку §f'§c1§f' или §cтелепортируйтесь к любому игроку §fиспользуя возможность наблюдателя.");
+            pl.sendMessage(prefix + "Вы присоединились к арене §7'§c" + arena + "§7' как наблюдатель.");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз §cкнопку §7'§c1§7' или §cтелепортируйтесь к любому игроку §7используя возможность наблюдателя.");
             
-            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре как наблюдатель!");
+            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §7присоединился к игре как наблюдатель!");
         }
         else {
-            pl.sendMessage(prefix + "Вы присоединились к арене §f'§c" + arena + "§f'!");
-            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §fили команду §c/tr leave§f.");
+            pl.sendMessage(prefix + "Вы присоединились к арене §7'§c" + arena + "§f'!");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §7или команду §c/tr leave§7.");
             
             if (tmpArena.getAllPlayers().size() < tmpArena.getMinPlayers()) {
-                pl.sendMessage(prefix + "Ожидание §c" + tmpArena.getMinPlayers() + " §fигроков для начала игры...");
+                pl.sendMessage(prefix + "Ожидание §c" + tmpArena.getMinPlayers() + " §7игроков для начала игры...");
             } 
             
-            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fприсоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
+            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §7присоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
         }
         
         return newTp;
@@ -171,7 +171,7 @@ public final class TntRunManager implements IGameManager {
         
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        arena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §fпокинул игру! " + getRemainPlayersArena(arena), pl.getName());
+        arena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §7покинул игру! " + getRemainPlayersArena(arena), pl.getName());
         
     }
     
@@ -200,6 +200,14 @@ public final class TntRunManager implements IGameManager {
         return this.stats;
     }
 
+    public TntArena getArenaByLocation(Location loc) {
+        for (TntArena ar : TntRun.getInstance().getTntRunManager().getAllArenas()) {
+            if (ar.getArenaRegion().isInRegion(loc)) {
+                return ar;
+            }
+        }
+        return null;
+    }
     
     @SuppressWarnings("unchecked")
     public void loadArenas() {
@@ -252,7 +260,7 @@ public final class TntRunManager implements IGameManager {
 
         this.arenas.remove(name);
     }
-
+    
     public static String getRemainPlayersArena(TntArena arena) {
         return "§8[§6" + arena.getAllPlayersType(PlayingPlayer.class).size() + "§7/§c" + arena.getMaxPlayers() + "§8]";
     }

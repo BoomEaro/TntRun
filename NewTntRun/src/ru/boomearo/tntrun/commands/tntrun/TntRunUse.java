@@ -52,7 +52,7 @@ public class TntRunUse {
 
             am.saveArenas();
 
-            pl.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§f' успешно создана!");
+            pl.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§7' успешно создана!");
         }
         catch (Exception e) {
             pl.sendMessage(e.getMessage());
@@ -76,7 +76,7 @@ public class TntRunUse {
         TntRunManager trm = TntRun.getInstance().getTntRunManager();
         TntArena ar = trm.getGameArena(arena);
         if (ar == null) {
-            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§f' не найдена!");
+            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§7' не найдена!");
             return true;
         }
         
@@ -103,7 +103,7 @@ public class TntRunUse {
         TntRunManager trm = TntRun.getInstance().getTntRunManager();
         TntArena ar = trm.getGameArena(arena);
         if (ar == null) {
-            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§f' не найдена!");
+            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§7' не найдена!");
             return true;
         }
         
@@ -132,7 +132,7 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().joinGame(pl, TntRun.class, arena);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §f" + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §7" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -156,7 +156,7 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().leaveGame(pl);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §f" + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §7" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -174,7 +174,7 @@ public class TntRunUse {
         final String sep = TntRunManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
-            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§f'. Статус: " + arena.getState().getName() + "§f. Игроков: " + TntRunManager.getRemainPlayersArena(arena));
+            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + TntRunManager.getRemainPlayersArena(arena));
         }
         cs.sendMessage(sep);
         
