@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -182,6 +183,19 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
                 handleSendLevels(level);
             });
         }
+    }
+    
+    public void sendSounds(Sound sound, float volume, float pitch, Location loc) {
+        for (TntPlayer tp : this.players.values()) {
+            Player pl = tp.getPlayer();
+            if (pl.isOnline()) {
+                pl.playSound((loc != null ? loc : pl.getLocation()), sound, volume, pitch);
+            }
+        }
+    }
+    
+    public void sendSounds(Sound sound, float volume, float pitch) {
+        sendSounds(sound, volume, pitch, null);
     }
     
     private void handleSendLevels(int level) {

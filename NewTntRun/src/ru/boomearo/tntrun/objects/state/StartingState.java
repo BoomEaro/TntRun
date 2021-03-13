@@ -1,5 +1,7 @@
 package ru.boomearo.tntrun.objects.state;
 
+import org.bukkit.Sound;
+
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
@@ -86,13 +88,14 @@ public class StartingState implements IGameState, ICountable {
             }
             
             arena.sendLevels(this.count);
-            
             if (this.count <= 5) {
                 arena.sendMessages(TntRunManager.prefix + "Игра начнется через §c" + DateUtil.formatedTime(this.count, false));
+                arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
             }
             else {
                 if ((this.count % 5) == 0){
                     arena.sendMessages(TntRunManager.prefix + "Игра начнется через §c" + DateUtil.formatedTime(this.count, false));
+                    arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
                 }
             }
             

@@ -20,12 +20,8 @@ import ru.boomearo.tntrun.objects.TntPlayer;
 
 public class PlayerButtonListener implements Listener {
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
         Player pl = e.getPlayer();
         TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {

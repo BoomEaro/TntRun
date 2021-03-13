@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 
 import ru.boomearo.gamecontrol.GameControl;
@@ -55,6 +56,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         }
         
         this.arena.sendMessages(TntRunManager.prefix + "Игра началась. Удачи!");
+        this.arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
     }
     
     @Override
@@ -80,6 +82,8 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     TntRunStatistics trs = TntRun.getInstance().getTntRunManager().getStatisticManager();
                     trs.addStats(TntStatsType.Defeat, tp.getName());
                     
+                    this.arena.sendSounds(Sound.ENTITY_WITHER_HURT, 999, 2);
+                    
                     if (pp.getKiller() != null) {
                         if (tp.getName().equals(pp.getKiller())) {
                             this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §7проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena));
@@ -102,6 +106,8 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                         if (winner != null) {
                             winner.setPlayerType(new LosePlayer());
                             this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + winner.getName() + " §7победил!");
+                            
+                            this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
                             
                             //Добавляем единицу в статистику побед
                             trs.addStats(TntStatsType.Wins, winner.getName());
