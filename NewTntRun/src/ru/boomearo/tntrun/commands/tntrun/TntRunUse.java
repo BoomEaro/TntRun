@@ -1,6 +1,7 @@
 package ru.boomearo.tntrun.commands.tntrun;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -171,9 +172,15 @@ public class TntRunUse {
             return false;
         }
         
+        Collection<TntArena> arenas = TntRun.getInstance().getTntRunManager().getAllArenas();
+        if (arenas.isEmpty()) {
+            cs.sendMessage(TntRunManager.prefix + "Арены еще не созданы!");
+            return true;
+        }
+        
         final String sep = TntRunManager.prefix + "§8============================";
         cs.sendMessage(sep);
-        for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
+        for (TntArena arena : arenas) {
             cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + TntRunManager.getRemainPlayersArena(arena));
         }
         cs.sendMessage(sep);
