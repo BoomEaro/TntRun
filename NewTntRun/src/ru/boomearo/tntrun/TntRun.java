@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.spawn.EssentialsSpawn;
 
 import ru.boomearo.gamecontrol.GameControl;
@@ -34,8 +33,7 @@ public class TntRun extends JavaPlugin {
     private TntRunManager arenaManager = null;
     
     private ArenasRunnable pmr = null;
-    
-    private Essentials ess = null;
+
     private EssentialsSpawn essSpawn = null;
     
     private static TntRun instance = null;
@@ -43,7 +41,6 @@ public class TntRun extends JavaPlugin {
     public void onEnable() {
         instance = this;
         
-        this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
         this.essSpawn = (EssentialsSpawn) Bukkit.getPluginManager().getPlugin("EssentialsSpawn");
         
         ConfigurationSerialization.registerClass(CuboidRegion.class);
@@ -121,10 +118,6 @@ public class TntRun extends JavaPlugin {
     
     public TntRunManager getTntRunManager() {
         return this.arenaManager;
-    }
-    
-    public Essentials getEssentials() {
-        return this.ess;
     }
     
     public EssentialsSpawn getEssentialsSpawn() {
