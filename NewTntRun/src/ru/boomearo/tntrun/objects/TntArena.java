@@ -1,6 +1,7 @@
 package ru.boomearo.tntrun.objects;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -30,7 +31,6 @@ import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.state.WaitingState;
-import ru.boomearo.tntrun.utils.RandomUtil;
 
 public class TntArena implements IGameArena, ConfigurationSerializable {
 
@@ -42,7 +42,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     
     private final World world;
     private final IRegion arenaRegion;
-    private final List<Location> spawnPoints;
+    private final ConcurrentMap<Integer, TntTeam> teams;
     
     private final Location arenaCenter;
     
@@ -52,14 +52,14 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
-    public TntArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, List<Location> spawnPoints, Location arenaCenter, Clipboard clipboard) {
+    public TntArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams, Location arenaCenter, Clipboard clipboard) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.timelimit = timeLimit;
         this.world = world;
         this.arenaRegion = arenaRegion;
-        this.spawnPoints = spawnPoints;
+        this.teams = teams;
         this.arenaCenter = arenaCenter;
         this.clipboard = clipboard;
     }
@@ -128,8 +128,21 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         return this.arenaRegion;
     }
     
-    public List<Location> getSpawnPoints() {
-        return this.spawnPoints;
+    public TntTeam getTeamById(int id) {
+        return this.teams.get(id);
+    }
+    
+    public Collection<TntTeam> getAllTeams() {
+        return this.teams.values();
+    }
+    
+    public TntTeam getFreeTeam() {
+        for (TntTeam team : this.teams.values()) {
+            if (team.getPlayer() == null) {
+                return team;
+            }
+        }
+        return null;
     }
     
     public Location getArenaCenter() {
@@ -217,12 +230,6 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         return tmp;
     }
     
-    public Location getRandomSpawnLocation() {
-        List<Location> spawns = getSpawnPoints();
-        
-        return spawns.get(RandomUtil.getRandomNumberRange(0, spawns.size() - 1));
-    }
-    
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
@@ -234,7 +241,9 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         
         result.put("world", this.world.getName());
         result.put("region", this.arenaRegion);
-        result.put("spawnPoints", this.spawnPoints);
+        
+        List<TntTeam> t = new ArrayList<TntTeam>(this.teams.values());
+        result.put("teams", t);
         result.put("arenaCenter", this.arenaCenter);
         
         return result;
@@ -248,7 +257,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         int timeLimit = 300;
         World world = null;
         IRegion region = null;
-        List<Location> spawnPoints = null;
+        List<TntTeam> teams = new ArrayList<TntTeam>();
         Location arenaCenter = null;
 
         Object na = args.get("name");
@@ -281,9 +290,9 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
             region = (IRegion) re;
         }
 
-        Object sp = args.get("spawnPoints");
+        Object sp = args.get("teams");
         if (sp != null) {
-            spawnPoints = (List<Location>) sp;
+            teams = (List<TntTeam>) sp;
         }
 
         Object ac = args.get("arenaCenter");
@@ -303,7 +312,12 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
             e.printStackTrace();
         }
         
-        return new TntArena(name, minPlayers, maxPlayers, timeLimit, world, region, spawnPoints, arenaCenter, cb);
+        ConcurrentMap<Integer, TntTeam> nTeams = new ConcurrentHashMap<Integer, TntTeam>();
+        for (TntTeam team : teams) {
+            nTeams.put(team.getId(), team);
+        }
+        
+        return new TntArena(name, minPlayers, maxPlayers, timeLimit, world, region, nTeams, arenaCenter, cb);
     }
 
 

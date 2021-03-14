@@ -22,6 +22,7 @@ import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
+import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
@@ -82,6 +83,11 @@ public final class TntRunManager implements IGameManager {
             throw new PlayerGameException("Арена §7'§c" + arena + "§7' переполнена!");
         }
         
+        TntTeam team = tmpArena.getFreeTeam();
+        if (team == null) {
+            throw new ConsoleGameException("Не найдено свободных команд!");
+        }
+        
         IGameState state = tmpArena.getState();
 
         IPlayerType type;
@@ -97,10 +103,13 @@ public final class TntRunManager implements IGameManager {
             type = new PlayingPlayer();
             isSpec = false;
         }
-
+        
         //Создаем игрока
-        TntPlayer newTp = new TntPlayer(pl.getName(), pl, type, tmpArena);
+        TntPlayer newTp = new TntPlayer(pl.getName(), pl, type, tmpArena, team);
 
+        //Добавляем в команду
+        team.setPlayer(newTp);
+        
         //Добавляем в арену
         tmpArena.addPlayer(newTp);
 
@@ -141,6 +150,11 @@ public final class TntRunManager implements IGameManager {
             throw new ConsoleGameException("Игрок не в игре!");
         }
 
+        TntTeam team = tmpPlayer.getTeam();
+        
+        //Удаляем у тимы игрока
+        team.setPlayer(null);
+        
         TntArena arena = tmpPlayer.getArena();
         
         arena.removePlayer(pl.getName());

@@ -1,9 +1,9 @@
 package ru.boomearo.tntrun.commands.tntrun;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,6 +20,7 @@ import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.commands.CmdInfo;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
+import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
 
 public class TntRunUse {
@@ -45,8 +46,16 @@ public class TntRunUse {
             return true;
         }
 
+        ConcurrentMap<Integer, TntTeam> teams = new ConcurrentHashMap<Integer, TntTeam>();
+        
+        int maxPlayers = 15;
+        
+        for (int i = 1; i <= maxPlayers; i++) {
+            teams.put(i, new TntTeam(i, null));
+        }
+        
         try {
-            TntArena newArena = new TntArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), new ArrayList<Location>(), pl.getLocation(), null);
+            TntArena newArena = new TntArena(arena, 2, maxPlayers, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams, pl.getLocation(), null);
             
             TntRunManager am = TntRun.getInstance().getTntRunManager();
             am.addArena(newArena);
@@ -62,13 +71,13 @@ public class TntRunUse {
         return true;
     }
     
-    @CmdInfo(name = "addspawnpoint", description = "Добавить указанной арене точку спавна.", usage = "/tntrun addspawnpoint <арена>", permission = "tntrun.admin")
-    public boolean addspawnpoint(CommandSender cs, String[] args) {
+    @CmdInfo(name = "setspawnpoint", description = "Установить точку спавна в указанной арене указанной команде.", usage = "/tntrun setspawnpoint <арена> <ид>", permission = "tntrun.admin")
+    public boolean setspawnpoint(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
             cs.sendMessage("Данная команда только для игроков.");
             return true;
         }
-        if (args.length < 1 || args.length > 1) {
+        if (args.length < 2 || args.length > 2) {
             return false;
         }
         String arena = args[0];
@@ -81,38 +90,27 @@ public class TntRunUse {
             return true;
         }
         
-        ar.getSpawnPoints().add(pl.getLocation().clone());
-        
-        trm.saveArenas();
-        
-        cs.sendMessage(TntRunManager.prefix + "Спавн поинт успешно добавлен!");
-        
-        return true;
-    }
-    
-    @CmdInfo(name = "clearspawnpoints", description = "Удалить все точки спавна в указанной арене.", usage = "/tntrun clearspawnpoints <арена>", permission = "tntrun.admin")
-    public boolean clearspawnpoints(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
-            cs.sendMessage("Данная команда только для игроков.");
-            return true;
+        Integer id = null;
+        try {
+            id = Integer.parseInt(args[1]);
         }
-        if (args.length < 1 || args.length > 1) {
-            return false;
-        }
-        String arena = args[0];
-
-        TntRunManager trm = TntRun.getInstance().getTntRunManager();
-        TntArena ar = trm.getGameArena(arena);
-        if (ar == null) {
-            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§7' не найдена!");
+        catch (Exception e) {}
+        if (id == null) {
+            cs.sendMessage(TntRunManager.prefix + "Аргумент должен быть цифрой!");
             return true;
         }
         
-        ar.getSpawnPoints().clear();
+        TntTeam team = ar.getTeamById(id);
+        if (team == null) {
+            cs.sendMessage(TntRunManager.prefix + "Команда §c" + id + " §7не найдена!");
+            return true;
+        }
+        
+        team.setSpawnPoint(pl.getLocation().clone());
         
         trm.saveArenas();
         
-        cs.sendMessage(TntRunManager.prefix + "Все точки были сброшены!");
+        cs.sendMessage(TntRunManager.prefix + "Спавн поинт §c" + id + " §7успешно добавлен!");
         
         return true;
     }

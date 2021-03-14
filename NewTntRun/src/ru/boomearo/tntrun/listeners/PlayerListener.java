@@ -1,5 +1,6 @@
 package ru.boomearo.tntrun.listeners;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntPlayer;
+import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 
 public class PlayerListener implements Listener {
@@ -41,7 +43,11 @@ public class PlayerListener implements Listener {
         
         TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {
-            e.setRespawnLocation(tp.getArena().getRandomSpawnLocation());
+            TntTeam team = tp.getTeam();
+            Location loc = team.getSpawnPoint();
+            if (loc != null) {
+                e.setRespawnLocation(loc);
+            }
             tp.getPlayerType().preparePlayer(tp);
         }
     }

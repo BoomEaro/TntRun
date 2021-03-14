@@ -22,6 +22,7 @@ import ru.boomearo.tntrun.listeners.PlayerListener;
 import ru.boomearo.tntrun.listeners.SpectatorListener;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
+import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
 import ru.boomearo.tntrun.objects.state.RegenState;
 import ru.boomearo.tntrun.objects.statistics.TntStatsData;
@@ -45,6 +46,7 @@ public class TntRun extends JavaPlugin {
         
         ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(TntArena.class);
+        ConfigurationSerialization.registerClass(TntTeam.class);
         
         File configFile = new File(getDataFolder() + File.separator + "config.yml");
         if(!configFile.exists()) {
@@ -112,6 +114,7 @@ public class TntRun extends JavaPlugin {
         
         ConfigurationSerialization.unregisterClass(CuboidRegion.class);
         ConfigurationSerialization.unregisterClass(TntArena.class);
+        ConfigurationSerialization.unregisterClass(TntTeam.class);
         
         getLogger().info("Плагин успешно выключен.");
     }

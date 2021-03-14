@@ -13,12 +13,14 @@ public class TntPlayer implements IGamePlayer {
     private IPlayerType playerType;
    
     private TntArena where;
+    private TntTeam team;
     
-    public TntPlayer(String name, Player player, IPlayerType playerType, TntArena where) {
+    public TntPlayer(String name, Player player, IPlayerType playerType, TntArena where, TntTeam team) {
         this.name = name;
         this.player = player;
         this.playerType = playerType;
         this.where = where;
+        this.team = team;
     }
     
     @Override
@@ -34,6 +36,10 @@ public class TntPlayer implements IGamePlayer {
     @Override
     public TntArena getArena() {
         return this.where;
+    }
+    
+    public TntTeam getTeam() {
+        return this.team;
     }
     
     public IPlayerType getPlayerType() {
