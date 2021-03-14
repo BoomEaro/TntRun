@@ -90,7 +90,7 @@ public class TntRunUse {
         return true;
     }
     
-    @CmdInfo(name = "clearspawnpoints", description = "Удалить все точки спавна в указанной арене.", usage = "/tntrun cleanspawnpoints <арена>", permission = "tntrun.admin")
+    @CmdInfo(name = "clearspawnpoints", description = "Удалить все точки спавна в указанной арене.", usage = "/tntrun clearspawnpoints <арена>", permission = "tntrun.admin")
     public boolean clearspawnpoints(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
             cs.sendMessage("Данная команда только для игроков.");
