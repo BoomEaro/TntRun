@@ -129,8 +129,9 @@ public final class TntRunManager implements IGameManager {
             pl.sendMessage(prefix + "Вы присоединились к арене §7'§c" + arena + "§7'!");
             pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §7или команду §c/tr leave§7.");
             
-            if (tmpArena.getAllPlayers().size() < tmpArena.getMinPlayers()) {
-                pl.sendMessage(prefix + "Ожидание §c" + tmpArena.getMinPlayers() + " §7игроков для начала игры...");
+            int currCount = tmpArena.getAllPlayersType(PlayingPlayer.class).size();
+            if (currCount < tmpArena.getMinPlayers()) {
+                pl.sendMessage(prefix + "Ожидание §c" + (tmpArena.getMinPlayers() - currCount) + " §7игроков для начала игры...");
             } 
             
             tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §7присоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
