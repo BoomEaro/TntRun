@@ -63,7 +63,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
     public void autoUpdateHandler() {
         //Играть одним низя
         if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
-            this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для игры! Игра прервана.");
+            this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для игры! §cИгра прервана.");
             this.arena.setState(new EndingState(this.arena));
             return;
         }
@@ -86,14 +86,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     
                     if (pp.getKiller() != null) {
                         if (tp.getName().equals(pp.getKiller())) {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §7проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena));
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena));
                         }
                         else {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §7проиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena));
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena));
                         }
                     }
                     else {
-                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §7проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena));
+                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena));
                     }
                     
                     Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
@@ -105,7 +105,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                         }
                         if (winner != null) {
                             winner.setPlayerType(new LosePlayer());
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + winner.getName() + " §7победил!");
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + winner.getName() + " §6победил!");
                             
                             this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
                             
