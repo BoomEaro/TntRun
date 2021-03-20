@@ -70,6 +70,11 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     }
     
     @Override
+    public World getWorld() {
+        return this.world;
+    }
+    
+    @Override
     public TntPlayer getGamePlayer(String name) {
         return this.players.get(name);
     }
@@ -118,10 +123,6 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     
     public int getTimeLimit() {
         return this.timelimit;
-    }
-    
-    public World getWorld() {
-        return this.world;
     }
     
     public IRegion getArenaRegion() {

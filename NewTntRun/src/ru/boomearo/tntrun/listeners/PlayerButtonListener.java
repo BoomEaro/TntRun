@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ru.boomearo.tntrun.TntRun;
@@ -42,6 +43,18 @@ public class PlayerButtonListener implements Listener {
     
     @EventHandler
     public void onPlayerDropItemEvent(PlayerDropItemEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
+        Player pl = e.getPlayer();
+        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
+        if (tp != null) {
+            e.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerSwapHandItemsEvent(PlayerSwapHandItemsEvent e) {
         if (e.isCancelled()) {
             return;
         }

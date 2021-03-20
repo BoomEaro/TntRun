@@ -134,7 +134,7 @@ public final class TntRunManager implements IGameManager {
                 pl.sendMessage(prefix + "Ожидание §c" + (tmpArena.getMinPlayers() - currCount) + " §6игроков для начала игры...");
             } 
             
-            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §6присоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
+            tmpArena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §6присоединился к игре! " + getRemainPlayersArena(tmpArena, PlayingPlayer.class), pl.getName());
         }
         
         return newTp;
@@ -163,19 +163,19 @@ public final class TntRunManager implements IGameManager {
         this.players.remove(pl.getName());
 
         if (Bukkit.isPrimaryThread()) {
-            handlePlayerLeave(pl, arena);
+            handlePlayerLeave(pl, tmpPlayer, arena);
         }
         else {
             Bukkit.getScheduler().runTask(TntRun.getInstance(), () -> {
-                handlePlayerLeave(pl, arena);
+                handlePlayerLeave(pl, tmpPlayer, arena);
             });
         }
     }
 
-    private static void handlePlayerLeave(Player pl, TntArena arena) {
-        Location loc = TntRun.getInstance().getEssentialsSpawn().getSpawn("default");
+    private static void handlePlayerLeave(Player pl, TntPlayer player, TntArena arena) {
+        Location loc = GameControl.getSpawnLocation();
         if (loc != null) {
-            GameControl.getInstance().asyncTeleport(pl, loc);
+            pl.teleport(loc);
         }
 
         pl.setGameMode(GameMode.ADVENTURE);
@@ -186,7 +186,13 @@ public final class TntRunManager implements IGameManager {
         
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        arena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §6покинул игру! " + getRemainPlayersArena(arena), pl.getName());
+        IPlayerType type = player.getPlayerType();
+        if (type instanceof PlayingPlayer) {
+            arena.sendMessages(prefix + "Игрок §c" + pl.getName() + " §6покинул игру! " + getRemainPlayersArena(arena, PlayingPlayer.class), pl.getName());
+        }
+        else {
+            arena.sendMessages(prefix + "Наблюдатель §c" + pl.getName() + " §6покинул игру!", pl.getName());
+        }
         
     }
     
@@ -276,7 +282,7 @@ public final class TntRunManager implements IGameManager {
         this.arenas.remove(name);
     }
     
-    public static String getRemainPlayersArena(TntArena arena) {
-        return "§8[§6" + arena.getAllPlayersType(PlayingPlayer.class).size() + "§7/§c" + arena.getMaxPlayers() + "§8]";
+    public static String getRemainPlayersArena(TntArena arena, Class<? extends IPlayerType> clazz) {
+        return "§8[§6" + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + "§7/§c" + arena.getMaxPlayers() + "§8]";
     }
 }

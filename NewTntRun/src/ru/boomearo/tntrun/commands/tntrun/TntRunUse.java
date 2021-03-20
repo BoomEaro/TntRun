@@ -41,6 +41,10 @@ public class TntRunUse {
         
         BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
         LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
+        if (ls == null) {
+            pl.sendMessage(TntRunManager.prefix + "Выделите регион!");
+            return true;
+        }
         Region re = null;
         try {
             re = ls.getSelection(ls.getSelectionWorld());   
@@ -60,7 +64,7 @@ public class TntRunUse {
         }
         
         try {
-            TntArena newArena = new TntArena(arena, 2, maxPlayers, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams, pl.getLocation(), null);
+            TntArena newArena = new TntArena(arena, 2, maxPlayers, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams, GameControl.normalizeLocation(pl.getLocation()), null);
             
             TntRunManager am = TntRun.getInstance().getTntRunManager();
             am.addArena(newArena);
@@ -111,7 +115,7 @@ public class TntRunUse {
             return true;
         }
         
-        team.setSpawnPoint(pl.getLocation().clone());
+        team.setSpawnPoint(GameControl.normalizeRotation(pl.getLocation()));
         
         trm.saveArenas();
         
@@ -184,7 +188,7 @@ public class TntRunUse {
         final String sep = TntRunManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (TntArena arena : arenas) {
-            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§6'. Статус: " + arena.getState().getName() + "§6. Игроков: " + TntRunManager.getRemainPlayersArena(arena));
+            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§6'. Статус: " + arena.getState().getName() + "§6. Игроков: " + TntRunManager.getRemainPlayersArena(arena, null));
         }
         cs.sendMessage(sep);
         

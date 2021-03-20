@@ -86,14 +86,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     
                     if (pp.getKiller() != null) {
                         if (tp.getName().equals(pp.getKiller())) {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena));
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                         }
                         else {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena));
+                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                         }
                     }
                     else {
-                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena));
+                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                     }
                     
                     Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);

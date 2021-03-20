@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
-import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.TntTeam;
@@ -41,7 +40,7 @@ public class SpectatingPlayer implements IPlayerType {
         TntTeam team = player.getTeam();
         Location loc = team.getSpawnPoint();
         if (loc != null) {
-            GameControl.getInstance().asyncTeleport(pl, loc);
+            pl.teleport(loc);
         }
     }
 }

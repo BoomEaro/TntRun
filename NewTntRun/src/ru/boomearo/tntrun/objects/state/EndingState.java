@@ -9,7 +9,7 @@ import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 
-public class EndingState implements IGameState, ICountable {
+public class EndingState implements IGameState, ICountable, SpectatorFirst {
 
     private final TntArena arena;
     

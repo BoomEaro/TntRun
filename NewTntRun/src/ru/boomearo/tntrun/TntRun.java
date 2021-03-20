@@ -3,11 +3,8 @@ package ru.boomearo.tntrun;
 import java.io.File;
 import java.sql.SQLException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.earth2me.essentials.spawn.EssentialsSpawn;
 
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
@@ -35,15 +32,11 @@ public class TntRun extends JavaPlugin {
     
     private ArenasRunnable pmr = null;
 
-    private EssentialsSpawn essSpawn = null;
-    
     private static TntRun instance = null;
 
     public void onEnable() {
         instance = this;
-        
-        this.essSpawn = (EssentialsSpawn) Bukkit.getPluginManager().getPlugin("EssentialsSpawn");
-        
+
         ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(TntArena.class);
         ConfigurationSerialization.registerClass(TntTeam.class);
@@ -123,10 +116,6 @@ public class TntRun extends JavaPlugin {
         return this.arenaManager;
     }
     
-    public EssentialsSpawn getEssentialsSpawn() {
-        return this.essSpawn;
-    }
-    
     public File getSchematicDir() {
         return new File(this.getDataFolder(), File.separator + "schematics" + File.separator);
     }
@@ -163,5 +152,4 @@ public class TntRun extends JavaPlugin {
     public static TntRun getInstance() { 
         return instance;
     }
-
 }
