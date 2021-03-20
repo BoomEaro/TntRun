@@ -7,11 +7,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import ru.boomearo.gamecontrol.utils.ExpFix;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.ItemButton;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.TntTeam;
-import ru.boomearo.tntrun.utils.ExpFix;
 
 public class PlayingPlayer implements IPlayerType {
     
