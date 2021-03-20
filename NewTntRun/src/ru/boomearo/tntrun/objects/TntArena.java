@@ -19,10 +19,13 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import com.boydti.fawe.FaweAPI;
+import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.transform.Transform;
+import com.sk89q.worldedit.session.ClipboardHolder;
 
 import ru.boomearo.gamecontrol.objects.IGameArena;
 import ru.boomearo.gamecontrol.objects.IRegion;
@@ -102,8 +105,23 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         
         try {
             Location loc = this.arenaCenter;
-            EditSession editSession = this.clipboard.paste(FaweAPI.getWorld(this.world.getName()), BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), true, true, (Transform) null);
-            editSession.flushQueue();
+            
+            ClipboardHolder ch = new ClipboardHolder(this.clipboard);
+            
+            com.sk89q.worldedit.world.World w = FaweAPI.getWorld(this.world.getName());
+
+            EditSession es = new EditSessionBuilder(w).build();
+            
+            Operation op = ch.createPaste(es)
+                    .to(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()))
+                    .ignoreAirBlocks(false)
+                    .copyEntities(false)
+                    .copyBiomes(false)
+                    .build();
+            
+            Operations.completeLegacy(op);
+            
+            es.flushQueue();
         }
         catch (Exception e) {
             e.printStackTrace();

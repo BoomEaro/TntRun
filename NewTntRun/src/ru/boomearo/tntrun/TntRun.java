@@ -21,7 +21,8 @@ import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.region.CuboidRegion;
-import ru.boomearo.tntrun.objects.state.RegenState;
+import ru.boomearo.tntrun.objects.state.EndingState;
+import ru.boomearo.tntrun.objects.state.RunningState;
 import ru.boomearo.tntrun.objects.statistics.TntStatsData;
 import ru.boomearo.tntrun.objects.statistics.TntStatsType;
 import ru.boomearo.tntrun.runnable.ArenasRunnable;
@@ -98,11 +99,11 @@ public class TntRun extends JavaPlugin {
 
         for (TntArena ar : this.arenaManager.getAllArenas()) {
             IGameState state = ar.getState();
-            //Если выключение сервера застал в момент регенерации, то ничего не делаем
-            if (state instanceof RegenState) {
-                continue;
+            //Если сервер выключается в момент игры то делаем регенерацию в этом потоке
+            //Мы не делаем регенерацию когда регенерация уже идет или когда арена ожидает игроков.
+            if (state instanceof EndingState || state instanceof RunningState) {
+                ar.regen();
             }
-            ar.regen();
         }
         
         ConfigurationSerialization.unregisterClass(CuboidRegion.class);
