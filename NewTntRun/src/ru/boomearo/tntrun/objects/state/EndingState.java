@@ -13,7 +13,7 @@ public class EndingState implements IGameState, ICountable, SpectatorFirst {
 
     private final TntArena arena;
     
-    private int count = 5;
+    private int count = 15;
     
     private int cd = 20;
     
@@ -75,7 +75,9 @@ public class EndingState implements IGameState, ICountable, SpectatorFirst {
                 return;
             }
             
-            arena.sendMessages(TntRunManager.prefix + "Следующая игра начнется через §c" + DateUtil.formatedTime(this.count, false));
+            if ((this.count % 5) == 0) {
+                arena.sendMessages(TntRunManager.prefix + "Следующая игра начнется через §c" + DateUtil.formatedTime(this.count, false));
+            }
             
             this.count--;
             

@@ -10,8 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -33,6 +35,8 @@ import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
+import ru.boomearo.tntrun.objects.region.CuboidRegion;
+import ru.boomearo.tntrun.objects.region.CuboidRegion.ChunkCords;
 import ru.boomearo.tntrun.objects.state.WaitingState;
 
 public class TntArena implements IGameArena, ConfigurationSerializable {
@@ -44,7 +48,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     private final int timelimit;
     
     private final World world;
-    private final IRegion arenaRegion;
+    private final CuboidRegion arenaRegion;
     private final ConcurrentMap<Integer, TntTeam> teams;
     
     private final Location arenaCenter;
@@ -55,7 +59,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
-    public TntArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams, Location arenaCenter, Clipboard clipboard) {
+    public TntArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, CuboidRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams, Location arenaCenter, Clipboard clipboard) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
@@ -249,6 +253,31 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         return tmp;
     }
     
+    //Подгружает чанки в память навсегда
+    public void forceLoadChunksToMemory() {
+        if (this.arenaRegion != null) {
+            for (ChunkCords cc : this.arenaRegion.getAllChunks()) {
+                Consumer<Chunk> c = new Consumer<Chunk>() {
+                    @Override
+                    public void accept(Chunk t) {
+                        t.setForceLoaded(true);
+                    }
+
+                };
+                this.world.getChunkAtAsync(cc.getX(), cc.getZ(), c);
+            }
+        }
+    }
+    
+    public void sendTitle(String first, String second, int in, int stay, int out) {
+        for (TntPlayer sp : this.players.values()) {
+            Player pl = sp.getPlayer();
+            if (pl.isOnline()) {
+                pl.sendTitle(first, second, in, stay, out);
+            }
+        }
+    }
+    
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
@@ -275,7 +304,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
         int maxPlayers = 15;
         int timeLimit = 300;
         World world = null;
-        IRegion region = null;
+        CuboidRegion region = null;
         List<TntTeam> teams = new ArrayList<TntTeam>();
         Location arenaCenter = null;
 
@@ -306,7 +335,7 @@ public class TntArena implements IGameArena, ConfigurationSerializable {
 
         Object re = args.get("region");
         if (re != null) {
-            region = (IRegion) re;
+            region = (CuboidRegion) re;
         }
 
         Object sp = args.get("teams");

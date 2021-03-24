@@ -47,14 +47,14 @@ public class ArenasRunnable extends BukkitRunnable {
                     Player pl = tp.getPlayer();
                     //Если игрок внутри арены
                     if (arena.getArenaRegion().isInRegion(pl.getLocation())) {
-                        destroyBlock(pl.getLocation(), arena, tp.getName(), rs);
+                        destroyBlock(pl.getLocation(), arena, tp, rs);
                     }
                 }
             }
         }
     }
 
-    private static void destroyBlock(Location loc, TntArena arena, String owner, RunningState rs) {
+    private static void destroyBlock(Location loc, TntArena arena, TntPlayer owner, RunningState rs) {
         int y = loc.getBlockY() + 1;
         Block block = null;
         for (int i = 0; i <= SCAN_DEPTH; i++) {

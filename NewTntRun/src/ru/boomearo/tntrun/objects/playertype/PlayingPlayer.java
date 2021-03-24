@@ -15,7 +15,7 @@ import ru.boomearo.tntrun.objects.TntTeam;
 
 public class PlayingPlayer implements IPlayerType {
     
-    private String killer;
+    private TntPlayer killer;
     
     @Override
     public void preparePlayer(TntPlayer player) {
@@ -29,11 +29,11 @@ public class PlayingPlayer implements IPlayerType {
         }
     }
     
-    public String getKiller() {
+    public TntPlayer getKiller() {
         return this.killer;
     }
     
-    public void setKiller(String killer) {
+    public void setKiller(TntPlayer killer) {
         this.killer = killer;
     }
     

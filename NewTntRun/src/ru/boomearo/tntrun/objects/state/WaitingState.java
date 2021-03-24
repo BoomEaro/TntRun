@@ -36,6 +36,8 @@ public class WaitingState implements IWaitingState {
             }
             
             tp.getPlayerType().preparePlayer(tp);
+            
+            tp.sendBoard(0);
         }
     }
     

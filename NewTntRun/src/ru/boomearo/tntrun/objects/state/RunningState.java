@@ -53,6 +53,8 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         //Подготавливаем всех игроков (например тп на точку возрождения)
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayerType().preparePlayer(tp);
+            
+            tp.sendBoard(1);
         }
         
         this.arena.sendMessages(TntRunManager.prefix + "Игра началась. Удачи!");
@@ -84,16 +86,18 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     
                     this.arena.sendSounds(Sound.ENTITY_WITHER_HURT, 999, 2);
                     
-                    if (pp.getKiller() != null) {
-                        if (tp.getName().equals(pp.getKiller())) {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                    TntPlayer killer = pp.getKiller();
+                    
+                    if (killer != null) {
+                        if (tp.getName().equals(killer.getName())) {
+                            this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                         }
                         else {
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, свалившись в яму игрока §c" + pp.getKiller() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                            this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в яму игрока §c" + killer.getPlayer().getDisplayName() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                         }
                     }
                     else {
-                        this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + tp.getName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                        this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                     }
                     
                     Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
@@ -105,7 +109,10 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                         }
                         if (winner != null) {
                             winner.setPlayerType(new LosePlayer());
-                            this.arena.sendMessages(TntRunManager.prefix + "Игрок §c" + winner.getName() + " §6победил!");
+                            
+                            this.arena.sendTitle("", "§c" + winner.getPlayer().getDisplayName() + " §6победил!", 20, 20*15, 20);
+                            
+                            this.arena.sendMessages(TntRunManager.prefix + "§c" + winner.getPlayer().getDisplayName() + " §6победил!");
                             
                             this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
                             
@@ -186,7 +193,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         return this.removedBlocks.get(convertLocToString(loc));
     }
     
-    public void addBlock(Block block, String owner) {
+    public void addBlock(Block block, TntPlayer owner) {
         this.removedBlocks.put(convertLocToString(block.getLocation()), new BlockOwner(block.getType(), owner));
     }
     
@@ -196,9 +203,9 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
 
     public static class BlockOwner {
         private final Material mat;
-        private final String owner;
+        private final TntPlayer owner;
         
-        public BlockOwner(Material mat, String owner) {
+        public BlockOwner(Material mat, TntPlayer owner) {
             this.mat = mat;
             this.owner = owner;
         }
@@ -207,7 +214,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             return this.mat;
         }
         
-        public String getName() {
+        public TntPlayer getName() {
             return this.owner;
         }
     }
