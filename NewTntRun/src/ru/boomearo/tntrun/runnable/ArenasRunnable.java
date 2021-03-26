@@ -46,7 +46,7 @@ public class ArenasRunnable extends BukkitRunnable {
                     
                     Player pl = tp.getPlayer();
                     //Если игрок внутри арены
-                    if (arena.getArenaRegion().isInRegion(pl.getLocation())) {
+                    if (arena.getArenaRegion().isInRegionPoint(pl.getLocation())) {
                         destroyBlock(pl.getLocation(), arena, tp, rs);
                     }
                 }

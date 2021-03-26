@@ -1,7 +1,9 @@
 package ru.boomearo.tntrun.objects.state;
 
 import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.runnable.RegenTask;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
@@ -29,7 +31,19 @@ public class RegenState implements IGameState, SpectatorFirst {
         this.arena.sendMessages(TntRunManager.prefix + "Начинаем регенерацию арены..");
         
         //Добавляем регенерацию в очередь.
-        GameControl.getInstance().getGameManager().queueRegenArena(this.arena);
+        try {
+            GameControl.getInstance().getGameManager().queueRegenArena(new RegenTask(this.arena, () -> {
+                TntArena arena = this.arena;
+                
+                IGameState state = arena.getState();
+                if (state instanceof RunningState || state instanceof EndingState || state instanceof RegenState) {
+                    arena.setState(new WaitingState(this.arena));
+                }
+            }));
+        } 
+        catch (ConsoleGameException e) {
+            e.printStackTrace();
+        }
     }
     
     
@@ -38,7 +52,7 @@ public class RegenState implements IGameState, SpectatorFirst {
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayer().spigot().respawn();
             
-            if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+            if (!this.arena.getArenaRegion().isInRegionPoint(tp.getPlayer().getLocation())) {
                 tp.getPlayerType().preparePlayer(tp);
             }
         }

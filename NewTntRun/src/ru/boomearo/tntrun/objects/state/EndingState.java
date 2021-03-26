@@ -48,7 +48,7 @@ public class EndingState implements IGameState, ICountable, SpectatorFirst {
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayer().spigot().respawn();
             
-            if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+            if (!this.arena.getArenaRegion().isInRegionPoint(tp.getPlayer().getLocation())) {
                 tp.getPlayerType().preparePlayer(tp);
             }
         }

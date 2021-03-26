@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 import ru.boomearo.tntrun.commands.tntrun.CmdExecutorTntRun;
 import ru.boomearo.tntrun.database.Sql;
@@ -21,9 +20,6 @@ import ru.boomearo.tntrun.listeners.SpectatorListener;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntTeam;
-import ru.boomearo.tntrun.objects.region.CuboidRegion;
-import ru.boomearo.tntrun.objects.state.EndingState;
-import ru.boomearo.tntrun.objects.state.RunningState;
 import ru.boomearo.tntrun.objects.statistics.TntStatsData;
 import ru.boomearo.tntrun.objects.statistics.TntStatsType;
 import ru.boomearo.tntrun.runnable.ArenasRunnable;
@@ -39,7 +35,6 @@ public class TntRun extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(TntArena.class);
         ConfigurationSerialization.registerClass(TntTeam.class);
         
@@ -105,16 +100,6 @@ public class TntRun extends JavaPlugin {
             e.printStackTrace();
         }
 
-        for (TntArena ar : this.arenaManager.getAllArenas()) {
-            IGameState state = ar.getState();
-            //Если сервер выключается в момент игры то делаем регенерацию в этом потоке
-            //Мы не делаем регенерацию когда регенерация уже идет или когда арена ожидает игроков.
-            if (state instanceof EndingState || state instanceof RunningState) {
-                ar.regen();
-            }
-        }
-        
-        ConfigurationSerialization.unregisterClass(CuboidRegion.class);
         ConfigurationSerialization.unregisterClass(TntArena.class);
         ConfigurationSerialization.unregisterClass(TntTeam.class);
         

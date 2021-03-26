@@ -229,7 +229,7 @@ public final class TntRunManager implements IGameManager {
 
     public TntArena getArenaByLocation(Location loc) {
         for (TntArena ar : TntRun.getInstance().getTntRunManager().getAllArenas()) {
-            if (ar.getArenaRegion().isInRegion(loc)) {
+            if (ar.getArenaRegion().isInRegionPoint(loc)) {
                 return ar;
             }
         }

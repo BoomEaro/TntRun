@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 
 import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
@@ -50,6 +51,13 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
     
     @Override
     public void initState() {
+        try {
+            GameControl.getInstance().getGameManager().setRegenGame(this.arena, true);
+        } 
+        catch (ConsoleGameException e) {
+            e.printStackTrace();
+        }
+        
         //Подготавливаем всех игроков (например тп на точку возрождения)
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayerType().preparePlayer(tp);
@@ -73,7 +81,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayer().spigot().respawn();
             
-            if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+            if (!this.arena.getArenaRegion().isInRegionPoint(tp.getPlayer().getLocation())) {
                 if (tp.getPlayerType() instanceof PlayingPlayer) {
                     PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
                     tp.setPlayerType(new LosePlayer());

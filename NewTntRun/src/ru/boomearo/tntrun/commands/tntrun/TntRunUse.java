@@ -17,12 +17,12 @@ import com.sk89q.worldedit.regions.Region;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
+import ru.boomearo.gamecontrol.objects.region.CuboidRegion;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.commands.CmdInfo;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntTeam;
-import ru.boomearo.tntrun.objects.region.CuboidRegion;
 
 public class TntRunUse {
 
@@ -64,7 +64,7 @@ public class TntRunUse {
         }
         
         try {
-            TntArena newArena = new TntArena(arena, 2, maxPlayers, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams, GameControl.normalizeLocation(pl.getLocation()), null);
+            TntArena newArena = new TntArena(arena, pl.getWorld(), null, GameControl.normalizeLocation(pl.getLocation()), 2, maxPlayers, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams);
             
             TntRunManager am = TntRun.getInstance().getTntRunManager();
             am.addArena(newArena);
