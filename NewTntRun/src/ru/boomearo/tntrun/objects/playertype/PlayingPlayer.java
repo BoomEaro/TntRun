@@ -4,7 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 
 import ru.boomearo.gamecontrol.utils.ExpFix;
 import ru.boomearo.tntrun.objects.ItemButton;
@@ -28,12 +28,14 @@ public class PlayingPlayer implements IPlayerType {
         
         ExpFix.setTotalExperience(player.getPlayer(), 0);
         
-        Inventory inv = pl.getInventory();
+        PlayerInventory inv = pl.getInventory();
         inv.clear();
         
         for (ItemButton ib : ItemButton.values()) {
             inv.setItem(ib.getSlot(), ib.getItem());
         }
+        
+        inv.setHeldItemSlot(0);
         
         TntTeam team = player.getTeam();
         Location loc = team.getSpawnPoint();

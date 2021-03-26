@@ -45,7 +45,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§6Арена: '§c" + tntPlayer.getArena().getName() + "§6'";
+                return "§7Арена: '§c" + tntPlayer.getArena().getName() + "§7'";
             }
             
         });
@@ -63,7 +63,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§6Игроков: §c" + tntPlayer.getArena().getAllPlayers().size() + "§7/§c" + tntPlayer.getArena().getMaxPlayers();
+                return "§7Игроков: §6" + tntPlayer.getArena().getAllPlayers().size() + "§7/§c" + tntPlayer.getArena().getMaxPlayers();
             }
             
             @Override
@@ -77,7 +77,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§6Статус: " + tntPlayer.getArena().getState().getName();
+                return "§7Статус: " + tntPlayer.getArena().getState().getName();
             }
             
             @Override
@@ -100,7 +100,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§6Статистика: ";
+                return "§7Статистика: ";
             }
             
         });
@@ -133,10 +133,10 @@ public class TntLobbyPage extends AbstractPage {
         TntStatsData data = TntRun.getInstance().getTntRunManager().getStatisticManager().getStatsData(type);
         StatsPlayer sp = data.getStatsPlayer(name);
         if (sp == null) {
-            return "§6" + type.getName() + ": §c0";
+            return "§7" + type.getName() + ": §c0";
         }
         
-        return "§6" + type.getName() + ": §c" + (long) sp.getValue();
+        return "§7" + type.getName() + ": §c" + (long) sp.getValue();
     }
     
 }
