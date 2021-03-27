@@ -17,7 +17,7 @@ import ru.boomearo.tntrun.objects.state.RunningState;
 public class TntGamePage extends AbstractPage {
 
     private final TntPlayer tntPlayer;
-    
+
     public TntGamePage(AbstractPageList pageList, TntPlayer tntPlayer) {
         super(pageList);
         this.tntPlayer = tntPlayer;
@@ -48,9 +48,9 @@ public class TntGamePage extends AbstractPage {
             protected String getText() {
                 return "§7Арена: '§c" + tntPlayer.getArena().getName() + "§7'";
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -66,14 +66,14 @@ public class TntGamePage extends AbstractPage {
             protected String getText() {
                 return "§7Статус: " + tntPlayer.getArena().getState().getName();
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -81,7 +81,7 @@ public class TntGamePage extends AbstractPage {
                 IGameState state = tntPlayer.getArena().getState();
                 if (state instanceof RunningState) {
                     RunningState rs = (RunningState) state;
-                    
+
                     return "§7До конца: §c" + getFormattedTimeLeft(rs.getCount());
                 }
                 else if (state instanceof EndingState) {
@@ -90,14 +90,14 @@ public class TntGamePage extends AbstractPage {
                 }
                 return " ";
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
             }
 
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -106,7 +106,7 @@ public class TntGamePage extends AbstractPage {
             }
 
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -115,8 +115,8 @@ public class TntGamePage extends AbstractPage {
             }
 
         });
-        
-        
+
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -125,10 +125,10 @@ public class TntGamePage extends AbstractPage {
             }
 
         });
-        
+
         return holders;
     }
-    
+
     private static String getFormattedTimeLeft(int time) {
         int min = 0;
         int sec = 0;
@@ -142,6 +142,6 @@ public class TntGamePage extends AbstractPage {
         secStr = (sec < 10) ? "0" + String.valueOf(sec) : String.valueOf(sec);
 
         return minStr + ":" + secStr;
-      }
+    }
 
 }

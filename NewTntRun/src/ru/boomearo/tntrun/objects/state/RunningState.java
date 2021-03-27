@@ -4,10 +4,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.util.NumberConversions;
 
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
@@ -33,6 +38,9 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
     private int cd = 20;
     
     private final Map<String, BlockOwner> removedBlocks = new HashMap<String, BlockOwner>();
+    
+    private static final int SCAN_DEPTH = 3;  
+    private static final double PLAYER_BOUNDINGBOX_ADD = 0.3;
     
     public RunningState(TntArena arena, int count) {
         this.arena = arena;
@@ -151,6 +159,8 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                 if (bo != null) {
                     pp.setKiller(bo.getName());
                 }
+                
+                handleDestroy(tp);
             }
         }
         
@@ -196,6 +206,17 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         }
         this.cd--;
     }
+    
+    //TODO сделать разрушение блоков как изначально задумано а не как костылем
+    private void handleDestroy(TntPlayer tp) {
+        Player pl = tp.getPlayer();
+        //Если игрок внутри арены
+        //if (this.arena.getArenaRegion().isInRegionPoint(pl.getLocation())) {
+        //    destroyBlock(pl.getLocation(), this.arena, tp, this);
+        //}
+        
+        destroyBlock(pl.getLocation(), this.arena, tp, this);
+    }
 
     public BlockOwner getBlockByLocation(Location loc) {
         return this.removedBlocks.get(convertLocToString(loc));
@@ -225,5 +246,68 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         public TntPlayer getName() {
             return this.owner;
         }
+    }
+    
+    private static void destroyBlock(Location loc, TntArena arena, TntPlayer owner, RunningState rs) {
+        int y = loc.getBlockY() + 1;
+        Block block = null;
+        for (int i = 0; i <= SCAN_DEPTH; i++) {
+            block = getBlockUnderPlayer(loc.getWorld(), loc.getX(), y, loc.getZ());
+            y--;
+            if (block != null) {
+                break;
+            }
+        }
+
+        if (block != null) {
+            final Block fBlock = block;
+            Material m = fBlock.getType();
+            if (m == Material.SAND || m == Material.RED_SAND) {
+                BlockOwner bo = rs.getBlockByLocation(fBlock.getLocation());
+                if (bo == null) {
+                    rs.addBlock(fBlock, owner);
+                    
+                    Bukkit.getScheduler().runTaskLater(TntRun.getInstance(), () -> {
+                        
+                        if (arena.getState() instanceof RunningState) {
+                            //blockstodestroy.remove(fblock);
+                            removeGLBlocks(fBlock);
+                        }
+                    }, 8);
+                }
+            }
+        }
+    }
+    
+    private static void removeGLBlocks(Block block) {
+        //block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation(), 1, 1, 1, 1, 1, block.getBlockData());
+        //block.setType(Material.AIR);
+        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_SAND_BREAK, 1, 1);
+        block = block.getRelative(BlockFace.DOWN);
+        block.setType(Material.AIR);
+    }
+    
+    private static Block getBlockUnderPlayer(World world, double x, int y, double z) {
+        Block b11 = getBlock(world, x, y, z, +PLAYER_BOUNDINGBOX_ADD, -PLAYER_BOUNDINGBOX_ADD);
+        if (b11.getType() != Material.AIR) {
+            return b11;
+        }
+        Block b12 = getBlock(world, x, y, z, -PLAYER_BOUNDINGBOX_ADD, +PLAYER_BOUNDINGBOX_ADD);
+        if (b12.getType() != Material.AIR) {
+            return b12;
+        }
+        Block b21 = getBlock(world, x, y, z, +PLAYER_BOUNDINGBOX_ADD, +PLAYER_BOUNDINGBOX_ADD);
+        if (b21.getType() != Material.AIR) {
+            return b21;
+        }
+        Block b22 = getBlock(world, x, y, z, -PLAYER_BOUNDINGBOX_ADD, -PLAYER_BOUNDINGBOX_ADD);
+        if (b22.getType() != Material.AIR) {
+            return b22;
+        }
+        return null;
+    }
+    
+    private static Block getBlock(World world, double x, int y, double z, double addx, double addz) {
+        return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
     }
 }

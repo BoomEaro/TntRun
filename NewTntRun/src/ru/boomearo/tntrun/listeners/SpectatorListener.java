@@ -7,8 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
-
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.tntrun.TntRun;
@@ -33,20 +31,6 @@ public class SpectatorListener implements Listener {
                 
                 e.setCancelled(true);
             }
-        }
-        
-    }
-    
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerStartSpectatingEntityEvent(PlayerStartSpectatingEntityEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Player pl = e.getPlayer();
-        
-        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
         }
         
     }

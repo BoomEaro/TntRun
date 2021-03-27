@@ -1,18 +1,11 @@
 package ru.boomearo.tntrun.listeners;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import ru.boomearo.tntrun.TntRun;
@@ -71,71 +64,4 @@ public class PlayerListener implements Listener {
         }
     }
     
-    @EventHandler
-    public void onEntityDamageEvent(EntityDamageEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Entity en = e.getEntity();
-        if (en instanceof Player) {
-            Player pl = (Player) en;
-            
-            TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
-            if (tp != null) {
-                e.setCancelled(true);
-            }
-        }
-    }
-    
-    @EventHandler
-    public void onBlockBreakEvent(BlockBreakEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Player pl = e.getPlayer();
-        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
-        }
-    }
-    
-    @EventHandler
-    public void onBlockPlaceEvent(BlockPlaceEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Player pl = e.getPlayer();
-        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
-        }
-    }
-    
-    @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent e) {
-        if (e.getAction() != Action.PHYSICAL) {
-            return;
-        }
-        
-        Player pl = e.getPlayer();
-        TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
-        }
-    }
-    
-    @EventHandler
-    public void onFoodLevelChangeEvent(FoodLevelChangeEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Entity en = e.getEntity();
-        if (en instanceof Player) {
-            Player pl = (Player) en;
-            TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
-            if (tp != null) {
-                e.setCancelled(true);
-            }
-        }
-    }
 }
