@@ -7,19 +7,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.IGameManager;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
-import ru.boomearo.gamecontrol.utils.ExpFix;
+
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
@@ -178,17 +176,6 @@ public final class TntRunManager implements IGameManager {
 
     private static void handlePlayerLeave(Player pl, TntPlayer player, TntArena arena) {
         player.sendBoard(null);
-        
-        Location loc = GameControl.getSpawnLocation();
-        if (loc != null) {
-            pl.teleport(loc);
-        }
-
-        pl.setGameMode(GameMode.ADVENTURE);
-        
-        ExpFix.setTotalExperience(pl, 0);
-        
-        pl.getInventory().clear();
         
         pl.sendMessage(prefix + "Вы покинули игру!");
         
