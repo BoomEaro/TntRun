@@ -13,6 +13,7 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 import ru.boomearo.tntrun.commands.tntrun.CmdExecutorTntRun;
 import ru.boomearo.tntrun.database.Sql;
 import ru.boomearo.tntrun.database.sections.SectionStats;
+import ru.boomearo.tntrun.listeners.ArenaListener;
 import ru.boomearo.tntrun.listeners.PlayerButtonListener;
 import ru.boomearo.tntrun.listeners.PlayerListener;
 import ru.boomearo.tntrun.listeners.SpectatorListener;
@@ -65,6 +66,8 @@ public class TntRun extends JavaPlugin {
         }
         
         getCommand("tntrun").setExecutor(new CmdExecutorTntRun());
+        
+        getServer().getPluginManager().registerEvents(new ArenaListener(), this);
         
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerButtonListener(), this);
