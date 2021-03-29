@@ -3,7 +3,6 @@ package ru.boomearo.tntrun;
 import java.io.File;
 import java.sql.SQLException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -46,13 +45,6 @@ public class TntRun extends JavaPlugin {
         
         if (this.arenaManager == null) {
             this.arenaManager = new TntRunManager();
-            
-            //После загрузки сервера запускаем задачу на перманентную подгрузку чанков
-            Bukkit.getScheduler().runTask(this, () -> {
-                for (TntArena arena : this.arenaManager.getAllArenas()) {
-                    arena.forceLoadChunksToMemory();
-                }
-            });
         }
         
         loadDataBase();
@@ -108,10 +100,6 @@ public class TntRun extends JavaPlugin {
     
     public TntRunManager getTntRunManager() {
         return this.arenaManager;
-    }
-    
-    public File getSchematicDir() {
-        return new File(this.getDataFolder(), File.separator + "schematics" + File.separator);
     }
     
     private void loadDataBase() {

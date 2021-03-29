@@ -1,6 +1,5 @@
 package ru.boomearo.tntrun.objects;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,22 +9,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-import com.boydti.fawe.FaweAPI;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-
 import ru.boomearo.gamecontrol.objects.arena.ClipboardRegenableGameArena;
 import ru.boomearo.gamecontrol.objects.region.IRegion;
-import ru.boomearo.gamecontrol.objects.region.IRegion.ChunkCords;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
@@ -44,8 +37,8 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
-    public TntArena(String name, World world, Clipboard clipboard, Location originCenter, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams) {
-        super(name, world, clipboard, originCenter);
+    public TntArena(String name, World world, Location originCenter, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams) {
+        super(name, world, originCenter);
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.timelimit = timeLimit;
@@ -183,22 +176,6 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
         return tmp;
     }
     
-    //Подгружает чанки в память навсегда
-    public void forceLoadChunksToMemory() {
-        if (this.arenaRegion != null) {
-            for (ChunkCords cc : this.arenaRegion.getAllChunks()) {
-                Consumer<Chunk> c = new Consumer<Chunk>() {
-                    @Override
-                    public void accept(Chunk t) {
-                        t.setForceLoaded(true);
-                    }
-
-                };
-                getWorld().getChunkAtAsync(cc.getX(), cc.getZ(), c);
-            }
-        }
-    }
-    
     public void sendTitle(String first, String second, int in, int stay, int out) {
         for (TntPlayer sp : this.players.values()) {
             Player pl = sp.getPlayer();
@@ -278,24 +255,12 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
             arenaCenter = (Location) ac;
         }
 
-
-        Clipboard cb = null;
-        try {
-            File schem = new File(TntRun.getInstance().getSchematicDir(), name + ".schem");
-            if (schem.exists() && schem.isFile()) {
-                cb = FaweAPI.load(schem);
-            }
-        } 
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        
         ConcurrentMap<Integer, TntTeam> nTeams = new ConcurrentHashMap<Integer, TntTeam>();
         for (TntTeam team : teams) {
             nTeams.put(team.getId(), team);
         }
         
-        return new TntArena(name, world, cb, arenaCenter, minPlayers, maxPlayers, timeLimit, region, nTeams);
+        return new TntArena(name, world, arenaCenter, minPlayers, maxPlayers, timeLimit, region, nTeams);
     }
 
 

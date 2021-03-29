@@ -64,7 +64,7 @@ public class TntRunUse {
         }
         
         try {
-            TntArena newArena = new TntArena(arena, pl.getWorld(), null, GameControl.normalizeLocation(pl.getLocation()), 2, maxPlayers, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams);
+            TntArena newArena = new TntArena(arena, pl.getWorld(), GameControl.normalizeLocation(pl.getLocation()), 2, maxPlayers, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams);
             
             TntRunManager am = TntRun.getInstance().getTntRunManager();
             am.addArena(newArena);
