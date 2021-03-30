@@ -66,10 +66,12 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
         return this.state;
     }
     
+    @Override
     public int getMinPlayers() {
         return this.minPlayers;
     }
     
+    @Override
     public int getMaxPlayers() {
         return this.maxPlayers;
     }
