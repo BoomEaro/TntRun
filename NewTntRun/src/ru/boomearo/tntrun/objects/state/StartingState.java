@@ -3,14 +3,14 @@ package ru.boomearo.tntrun.objects.state;
 import org.bukkit.Sound;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.objects.states.IStartingState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 
-public class StartingState implements IGameState, ICountable {
+public class StartingState implements IStartingState, ICountable {
 
     private final TntArena arena;
     

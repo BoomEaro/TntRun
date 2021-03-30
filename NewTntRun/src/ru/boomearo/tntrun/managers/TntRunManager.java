@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -53,6 +54,22 @@ public final class TntRunManager implements IGameManager {
     @Override
     public String getGameDisplayName() {
         return gameNameDys;
+    }
+    
+
+    @Override
+    public ChatColor getMainColor() {
+        return ChatColor.GOLD;
+    }
+
+    @Override
+    public ChatColor getVariableColor() {
+        return ChatColor.RED;
+    }
+
+    @Override
+    public ChatColor getOtherColor() {
+        return ChatColor.RED;
     }
 
     @Override

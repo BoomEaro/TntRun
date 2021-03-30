@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -37,8 +38,8 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
-    public TntArena(String name, World world, Location originCenter, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams) {
-        super(name, world, originCenter);
+    public TntArena(String name, World world, Material icon, Location originCenter, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams) {
+        super(name, world, icon, originCenter);
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.timelimit = timeLimit;
@@ -192,6 +193,7 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
         Map<String, Object> result = new LinkedHashMap<String, Object>();
 
         result.put("name", getName());
+        result.put("icon", getIcon().name());
         result.put("minPlayers", this.minPlayers);
         result.put("maxPlayers", this.maxPlayers);
         result.put("timeLimit", this.timelimit);
@@ -209,6 +211,7 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
     @SuppressWarnings("unchecked")
     public static TntArena deserialize(Map<String, Object> args) {
         String name = null;
+        Material icon = Material.STONE;
         int minPlayers = 2;
         int maxPlayers = 15;
         int timeLimit = 300;
@@ -220,6 +223,14 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
         Object na = args.get("name");
         if (na != null) {
             name = (String) na;
+        }
+        
+        Object ic = args.get("icon");
+        if (ic != null) {
+            try {
+                icon = Material.valueOf((String) ic);
+            }
+            catch (Exception e) {}
         }
 
         Object minp = args.get("minPlayers");
@@ -262,7 +273,7 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
             nTeams.put(team.getId(), team);
         }
         
-        return new TntArena(name, world, arenaCenter, minPlayers, maxPlayers, timeLimit, region, nTeams);
+        return new TntArena(name, world, icon, arenaCenter, minPlayers, maxPlayers, timeLimit, region, nTeams);
     }
 
 

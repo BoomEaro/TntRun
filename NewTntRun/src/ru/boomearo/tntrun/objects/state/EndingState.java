@@ -1,7 +1,7 @@
 package ru.boomearo.tntrun.objects.state;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.objects.states.IEndingState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
@@ -9,7 +9,7 @@ import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
 
-public class EndingState implements IGameState, ICountable, SpectatorFirst {
+public class EndingState implements IEndingState, ICountable, SpectatorFirst {
 
     private final TntArena arena;
     
