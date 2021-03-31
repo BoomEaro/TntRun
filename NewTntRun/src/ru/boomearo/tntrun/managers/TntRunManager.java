@@ -90,12 +90,12 @@ public final class TntRunManager implements IGameManager {
 
         TntArena tmpArena = this.arenas.get(arena);
         if (tmpArena == null) {
-            throw new PlayerGameException("Арена §7'§c" + arena + "§7' не найдена!");
+            throw new PlayerGameException("Карта §7'§c" + arena + "§7' не найдена!");
         }
 
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
-            throw new PlayerGameException("Арена §7'§c" + arena + "§7' переполнена!");
+            throw new PlayerGameException("Карта §7'§c" + arena + "§7' переполнена!");
         }
         
         TntTeam team = tmpArena.getFreeTeam();
@@ -137,7 +137,7 @@ public final class TntRunManager implements IGameManager {
         if (isSpec) {
             newTp.sendBoard(1);
             
-            pl.sendMessage(prefix + "Вы присоединились к арене §7'§c" + arena + "§7' как наблюдатель.");
+            pl.sendMessage(prefix + "Вы присоединились к карте §7'§c" + arena + "§7' как наблюдатель.");
             pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз §cкнопку §7'§c1§7' или §cтелепортируйтесь к любому игроку §6используя возможность наблюдателя.");
             
             tmpArena.sendMessages(prefix + "§c" + pl.getDisplayName() + " §7присоединился к игре как наблюдатель!");
@@ -146,7 +146,7 @@ public final class TntRunManager implements IGameManager {
             newTp.sendBoard(0);
             
             pl.sendMessage(prefix + "Вы присоединились к арене §7'§c" + arena + "§7'!");
-            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §7или команду §c/tr leave§7.");
+            pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §cМагма крем §7или команду §c/lobby§7.");
             
             int currCount = tmpArena.getAllPlayersType(PlayingPlayer.class).size();
             if (currCount < tmpArena.getMinPlayers()) {

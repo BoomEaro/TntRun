@@ -1,6 +1,8 @@
 package ru.boomearo.tntrun.board.pages;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.boomearo.board.objects.boards.AbstractHolder;
@@ -45,8 +47,26 @@ public class TntGamePage extends AbstractPage {
         holders.add(new AbstractHolder(this) {
 
             @Override
+            public String getText() {
+                return "§7" + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
+            }
+
+        });
+        
+        holders.add(new AbstractHolder(this) {
+
+            @Override
+            public String getText() {
+                return " ";
+            }
+
+        });
+        
+        holders.add(new AbstractHolder(this) {
+
+            @Override
             protected String getText() {
-                return "§7Арена: '§c" + tntPlayer.getArena().getName() + "§7'";
+                return "§7Карта: '§c" + tntPlayer.getArena().getName() + "§7'";
             }
 
         });
