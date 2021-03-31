@@ -138,14 +138,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             
             if (killer != null) {
                 if (tp.getName().equals(killer.getName())) {
-                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §7проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                 }
                 else {
-                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в яму игрока §c" + killer.getPlayer().getDisplayName() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §7проиграл, свалившись в яму игрока §c" + killer.getPlayer().getDisplayName() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                 }
             }
             else {
-                this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §7проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
             }
             
             Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
@@ -158,9 +158,9 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                 if (winner != null) {
                     winner.setPlayerType(new LosePlayer());
                     
-                    this.arena.sendTitle("", "§c" + winner.getPlayer().getDisplayName() + " §6победил!", 20, 20*15, 20);
+                    this.arena.sendTitle("", "§c" + winner.getPlayer().getDisplayName() + " §7победил!", 20, 20*15, 20);
                     
-                    this.arena.sendMessages(TntRunManager.prefix + "§c" + winner.getPlayer().getDisplayName() + " §6победил!");
+                    this.arena.sendMessages(TntRunManager.prefix + "§c" + winner.getPlayer().getDisplayName() + " §7победил!");
                     
                     this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
                     
@@ -274,7 +274,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         
         mBlock.setType(Material.AIR);
         tntBlock.setType(Material.AIR);
-        //TODO добавить эффект и звуки
+
         FallingBlock fb = mBlock.getWorld().spawnFallingBlock(mBlock.getLocation().clone().add(0.5d, 0, 0.5d), data);
         fb.setDropItem(false);
         fb.setHurtEntities(false);
