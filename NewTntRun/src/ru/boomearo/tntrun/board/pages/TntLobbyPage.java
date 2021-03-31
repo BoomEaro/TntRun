@@ -63,7 +63,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Игроков: §6" + tntPlayer.getArena().getAllPlayers().size() + "§7/§c" + tntPlayer.getArena().getMaxPlayers();
+                return "§7Игроков: §c" + tntPlayer.getArena().getAllPlayers().size() + "§7/§c" + tntPlayer.getArena().getMaxPlayers();
             }
             
             @Override

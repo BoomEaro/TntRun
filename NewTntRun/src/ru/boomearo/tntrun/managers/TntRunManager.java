@@ -39,7 +39,7 @@ public final class TntRunManager implements IGameManager {
     public static final String gameNameDys = "§8[§cTNTRun§8]";
     public static final String prefix = gameNameDys + ": §6";
     
-    public static final double winReward = 4;
+    public static final double winReward = 10;
 
     public TntRunManager() {
         loadArenas();
@@ -59,7 +59,7 @@ public final class TntRunManager implements IGameManager {
 
     @Override
     public ChatColor getMainColor() {
-        return ChatColor.GOLD;
+        return ChatColor.GRAY;
     }
 
     @Override

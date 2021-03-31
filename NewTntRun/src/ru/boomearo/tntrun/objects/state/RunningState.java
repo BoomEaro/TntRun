@@ -92,70 +92,19 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             tp.getPlayer().spigot().respawn();
             
             if (!this.arena.getArenaRegion().isInRegionPoint(tp.getPlayer().getLocation())) {
-                if (tp.getPlayerType() instanceof PlayingPlayer) {
-                    PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
-                    tp.setPlayerType(new LosePlayer());
-                    
-                    this.deathPlayers++;
-                    
-                    //Добавляем единицу в статистику поражений
-                    TntRunStatistics trs = TntRun.getInstance().getTntRunManager().getStatisticManager();
-                    trs.addStats(TntStatsType.Defeat, tp.getName());
-                    
-                    this.arena.sendSounds(Sound.ENTITY_WITHER_HURT, 999, 2);
-                    
-                    TntPlayer killer = pp.getKiller();
-                    
-                    if (killer != null) {
-                        if (tp.getName().equals(killer.getName())) {
-                            this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
-                        }
-                        else {
-                            this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в яму игрока §c" + killer.getPlayer().getDisplayName() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
-                        }
-                    }
-                    else {
-                        this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
-                    }
-                    
-                    Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
-                    if (win.size() == 1) {
-                        TntPlayer winner = null;
-                        for (TntPlayer w : win) {
-                            winner = w;
-                            break;
-                        }
-                        if (winner != null) {
-                            winner.setPlayerType(new LosePlayer());
-                            
-                            this.arena.sendTitle("", "§c" + winner.getPlayer().getDisplayName() + " §6победил!", 20, 20*15, 20);
-                            
-                            this.arena.sendMessages(TntRunManager.prefix + "§c" + winner.getPlayer().getDisplayName() + " §6победил!");
-                            
-                            this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
-                            
-                            //Добавляем единицу в статистику побед
-                            trs.addStats(TntStatsType.Wins, winner.getName());
-                            
-                            //В зависимости от того сколько игроков ПРОИГРАЛО мы получим награду.
-                            double reward = TntRunManager.winReward + (this.deathPlayers * TntRunManager.winReward);
-                            
-                            Vault.addMoney(winner.getName(), reward);
-                            
-                            winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: " + GameControl.getFormatedEco(reward));
-                            
-                            this.arena.setState(new EndingState(this.arena));
-                            return;
-                        }
-                    }
-                }
-                
-                tp.getPlayerType().preparePlayer(tp);
+                handleDeath(tp);
+                continue;
             }
-            
 
             if (tp.getPlayerType() instanceof PlayingPlayer) {
                 PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
+                
+                //Убиваем игрока если он оказался в лаве или воде
+                Material curr = tp.getPlayer().getLocation().getBlock().getType();
+                if (curr == Material.LAVA || curr == Material.WATER) {
+                    handleDeath(tp);
+                    continue;
+                }
                 
                 BlockOwner bo = this.removedBlocks.get(convertLocToString(tp.getPlayer().getLocation()));
                 if (bo != null) {
@@ -170,6 +119,68 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         
         
         handleCount(this.arena);
+    }
+    
+    private void handleDeath(TntPlayer tp) {
+        if (tp.getPlayerType() instanceof PlayingPlayer) {
+            PlayingPlayer pp = (PlayingPlayer) tp.getPlayerType();
+            tp.setPlayerType(new LosePlayer());
+            
+            this.deathPlayers++;
+            
+            //Добавляем единицу в статистику поражений
+            TntRunStatistics trs = TntRun.getInstance().getTntRunManager().getStatisticManager();
+            trs.addStats(TntStatsType.Defeat, tp.getName());
+            
+            this.arena.sendSounds(Sound.ENTITY_WITHER_HURT, 999, 2);
+            
+            TntPlayer killer = pp.getKiller();
+            
+            if (killer != null) {
+                if (tp.getName().equals(killer.getName())) {
+                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                }
+                else {
+                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, свалившись в яму игрока §c" + killer.getPlayer().getDisplayName() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                }
+            }
+            else {
+                this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §6проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+            }
+            
+            Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
+            if (win.size() == 1) {
+                TntPlayer winner = null;
+                for (TntPlayer w : win) {
+                    winner = w;
+                    break;
+                }
+                if (winner != null) {
+                    winner.setPlayerType(new LosePlayer());
+                    
+                    this.arena.sendTitle("", "§c" + winner.getPlayer().getDisplayName() + " §6победил!", 20, 20*15, 20);
+                    
+                    this.arena.sendMessages(TntRunManager.prefix + "§c" + winner.getPlayer().getDisplayName() + " §6победил!");
+                    
+                    this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
+                    
+                    //Добавляем единицу в статистику побед
+                    trs.addStats(TntStatsType.Wins, winner.getName());
+                    
+                    //В зависимости от того сколько игроков ПРОИГРАЛО мы получим награду.
+                    double reward = TntRunManager.winReward + (this.deathPlayers * TntRunManager.winReward);
+                    
+                    Vault.addMoney(winner.getName(), reward);
+                    
+                    winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: " + GameControl.getFormatedEco(reward));
+                    
+                    this.arena.setState(new EndingState(this.arena));
+                    return;
+                }
+            }
+        }
+        
+        tp.getPlayerType().preparePlayer(tp);
     }
     
     @Override
