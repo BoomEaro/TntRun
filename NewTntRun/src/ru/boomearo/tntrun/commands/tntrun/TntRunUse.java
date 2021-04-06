@@ -72,7 +72,7 @@ public class TntRunUse {
 
             am.saveArenas();
 
-            pl.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§7' успешно создана!");
+            pl.sendMessage(TntRunManager.prefix + "Арена '" + TntRunManager.variableColor + arena + TntRunManager.mainColor + "' успешно создана!");
         }
         catch (Exception e) {
             pl.sendMessage(e.getMessage());
@@ -96,7 +96,7 @@ public class TntRunUse {
         TntRunManager trm = TntRun.getInstance().getTntRunManager();
         TntArena ar = trm.getGameArena(arena);
         if (ar == null) {
-            cs.sendMessage(TntRunManager.prefix + "Арена '§c" + arena + "§7' не найдена!");
+            cs.sendMessage(TntRunManager.prefix + "Арена '" + TntRunManager.variableColor + arena + TntRunManager.mainColor + "' не найдена!");
             return true;
         }
         
@@ -112,7 +112,7 @@ public class TntRunUse {
         
         TntTeam team = ar.getTeamById(id);
         if (team == null) {
-            cs.sendMessage(TntRunManager.prefix + "Команда §c" + id + " §7не найдена!");
+            cs.sendMessage(TntRunManager.prefix + "Команда " + TntRunManager.variableColor + id + TntRunManager.mainColor + " не найдена!");
             return true;
         }
         
@@ -120,7 +120,7 @@ public class TntRunUse {
         
         trm.saveArenas();
         
-        cs.sendMessage(TntRunManager.prefix + "Спавн поинт §c" + id + " §7успешно добавлен!");
+        cs.sendMessage(TntRunManager.prefix + "Спавн поинт " + TntRunManager.variableColor + id + TntRunManager.mainColor + " успешно добавлен!");
         
         return true;
     }
@@ -141,7 +141,7 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().joinGame(pl, TntRun.class, arena);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §7" + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "§cОшибка: " + TntRunManager.mainColor + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -165,7 +165,7 @@ public class TntRunUse {
             GameControl.getInstance().getGameManager().leaveGame(pl);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(TntRunManager.prefix + "§cОшибка: §7" + e.getMessage());
+            pl.sendMessage(TntRunManager.prefix + "§cОшибка: " + TntRunManager.mainColor + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -189,7 +189,7 @@ public class TntRunUse {
         final String sep = TntRunManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (TntArena arena : arenas) {
-            cs.sendMessage(TntRunManager.prefix + "Арена: '§c" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + TntRunManager.getRemainPlayersArena(arena, null));
+            cs.sendMessage(TntRunManager.prefix + "Арена: '" + TntRunManager.variableColor + arena.getName() + "'" + TntRunManager.mainColor + ". Статус: " + arena.getState().getName() + TntRunManager.mainColor + ". Игроков: " + TntRunManager.getRemainPlayersArena(arena, null));
         }
         cs.sendMessage(sep);
         

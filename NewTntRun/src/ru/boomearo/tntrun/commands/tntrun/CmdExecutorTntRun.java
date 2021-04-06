@@ -74,6 +74,6 @@ public class CmdExecutorTntRun extends AbstractExecutor {
 
 	@Override
 	public String getSuffix() {
-		return " §8-§c ";
+		return " §8-" + TntRunManager.variableColor + " ";
 	}
 }

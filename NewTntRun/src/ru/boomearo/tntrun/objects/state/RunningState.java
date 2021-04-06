@@ -83,7 +83,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
     public void autoUpdateHandler() {
         //Играть одним низя
         if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 1) {
-            this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для игры! §cИгра прервана.");
+            this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для игры! " + TntRunManager.variableColor + "Игра прервана.");
             this.arena.setState(new EndingState(this.arena));
             return;
         }
@@ -138,14 +138,14 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             
             if (killer != null) {
                 if (tp.getName().equals(killer.getName())) {
-                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §7проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                    this.arena.sendMessages(TntRunManager.prefix + tp.getPlayer().getDisplayName() + TntRunManager.mainColor + " проиграл, свалившись в свою же яму! " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                 }
                 else {
-                    this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §7проиграл, свалившись в яму игрока §c" + killer.getPlayer().getDisplayName() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                    this.arena.sendMessages(TntRunManager.prefix + tp.getPlayer().getDisplayName() + TntRunManager.mainColor + " проиграл, свалившись в яму игрока " + killer.getPlayer().getDisplayName() + " " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
                 }
             }
             else {
-                this.arena.sendMessages(TntRunManager.prefix + "§c" + tp.getPlayer().getDisplayName() + " §7проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
+                this.arena.sendMessages(TntRunManager.prefix + tp.getPlayer().getDisplayName() + TntRunManager.mainColor + " проиграл, зайдя за границы игры. " + TntRunManager.getRemainPlayersArena(this.arena, PlayingPlayer.class));
             }
             
             Collection<TntPlayer> win = this.arena.getAllPlayersType(PlayingPlayer.class);
@@ -160,7 +160,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     
                     this.arena.sendTitle("", "§c" + winner.getPlayer().getDisplayName() + " §7победил!", 20, 20*15, 20);
                     
-                    this.arena.sendMessages(TntRunManager.prefix + "§c" + winner.getPlayer().getDisplayName() + " §7победил!");
+                    this.arena.sendMessages(TntRunManager.prefix + winner.getPlayer().getDisplayName() + TntRunManager.mainColor + " победил!");
                     
                     this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
                     
@@ -198,7 +198,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             this.cd = 20;
             
             if (this.count <= 0) {
-                arena.sendMessages(TntRunManager.prefix + "Время вышло! §cНичья!");
+                arena.sendMessages(TntRunManager.prefix + "Время вышло! " + TntRunManager.variableColor + "Ничья!");
                 arena.setState(new EndingState(this.arena));
                 return;
             }
@@ -206,11 +206,11 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             arena.sendLevels(this.count);
             
             if (this.count <= 10) {
-                arena.sendMessages(TntRunManager.prefix + "Игра закончится через §c" + DateUtil.formatedTime(this.count, false));
+                arena.sendMessages(TntRunManager.prefix + "Игра закончится через " + TntRunManager.variableColor + DateUtil.formatedTime(this.count, false));
             }
             else {
                 if ((this.count % 30) == 0){
-                    arena.sendMessages(TntRunManager.prefix + "Игра закончится через §c" + DateUtil.formatedTime(this.count, false));
+                    arena.sendMessages(TntRunManager.prefix + "Игра закончится через " + TntRunManager.variableColor + DateUtil.formatedTime(this.count, false));
                 }
             }
             

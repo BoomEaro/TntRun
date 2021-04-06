@@ -47,7 +47,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             public String getText() {
-                return "§7" + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
+                return TntRunManager.mainColor + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
             }
 
         });
@@ -65,7 +65,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Карта: '§c" + tntPlayer.getArena().getName() + "§7'";
+                return TntRunManager.mainColor + "Карта: '" + TntRunManager.variableColor + tntPlayer.getArena().getName() + TntRunManager.mainColor + "'";
             }
             
         });
@@ -83,7 +83,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Игроков: §c" + tntPlayer.getArena().getAllPlayers().size() + "§7/§c" + tntPlayer.getArena().getMaxPlayers();
+                return TntRunManager.mainColor + "Игроков: " + TntRunManager.variableColor + tntPlayer.getArena().getAllPlayers().size() + TntRunManager.mainColor + "/" + TntRunManager.otherColor + tntPlayer.getArena().getMaxPlayers();
             }
             
             @Override
@@ -97,7 +97,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Статус: " + tntPlayer.getArena().getState().getName();
+                return TntRunManager.mainColor + "Статус: " + tntPlayer.getArena().getState().getName();
             }
             
             @Override
@@ -120,7 +120,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Статистика: ";
+                return TntRunManager.mainColor + "Статистика: ";
             }
             
         });
@@ -153,10 +153,10 @@ public class TntLobbyPage extends AbstractPage {
         TntStatsData data = TntRun.getInstance().getTntRunManager().getStatisticManager().getStatsData(type);
         StatsPlayer sp = data.getStatsPlayer(name);
         if (sp == null) {
-            return "§7" + type.getName() + ": §c0";
+            return TntRunManager.mainColor + type.getName() + ": " + TntRunManager.variableColor + "0";
         }
         
-        return "§7" + type.getName() + ": §c" + (long) sp.getValue();
+        return TntRunManager.mainColor + type.getName() + ": " + TntRunManager.variableColor + (long) sp.getValue();
     }
     
 }

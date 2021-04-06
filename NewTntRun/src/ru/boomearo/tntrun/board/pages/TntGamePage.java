@@ -48,7 +48,7 @@ public class TntGamePage extends AbstractPage {
 
             @Override
             public String getText() {
-                return "§7" + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
+                return TntRunManager.mainColor + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
             }
 
         });
@@ -66,7 +66,7 @@ public class TntGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Карта: '§c" + tntPlayer.getArena().getName() + "§7'";
+                return TntRunManager.mainColor + "Карта: '" + TntRunManager.variableColor + tntPlayer.getArena().getName() + TntRunManager.mainColor + "'";
             }
 
         });
@@ -84,7 +84,7 @@ public class TntGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Статус: " + tntPlayer.getArena().getState().getName();
+                return TntRunManager.mainColor + "Статус: " + tntPlayer.getArena().getState().getName();
             }
 
             @Override
@@ -102,11 +102,11 @@ public class TntGamePage extends AbstractPage {
                 if (state instanceof RunningState) {
                     RunningState rs = (RunningState) state;
 
-                    return "§7До конца: §c" + getFormattedTimeLeft(rs.getCount());
+                    return TntRunManager.mainColor + "До конца: " + TntRunManager.variableColor + getFormattedTimeLeft(rs.getCount());
                 }
                 else if (state instanceof EndingState) {
                     EndingState es = (EndingState) state;
-                    return "§7Новая игра: §c" + getFormattedTimeLeft(es.getCount());
+                    return TntRunManager.mainColor + "Новая игра: " + TntRunManager.variableColor+ getFormattedTimeLeft(es.getCount());
                 }
                 return " ";
             }
@@ -122,7 +122,7 @@ public class TntGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Наблюдателей: §c" + tntPlayer.getArena().getAllPlayersType(LosePlayer.class).size();
+                return TntRunManager.mainColor + "Наблюдателей: " + TntRunManager.variableColor + tntPlayer.getArena().getAllPlayersType(LosePlayer.class).size();
             }
 
         });
@@ -141,7 +141,7 @@ public class TntGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§7Игроков: §c" + tntPlayer.getArena().getAllPlayersType(PlayingPlayer.class).size();
+                return TntRunManager.mainColor + "Игроков: " + TntRunManager.variableColor + tntPlayer.getArena().getAllPlayersType(PlayingPlayer.class).size();
             }
 
         });
