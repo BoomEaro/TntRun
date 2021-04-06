@@ -83,7 +83,7 @@ public class TntLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return TntRunManager.mainColor + "Игроков: " + TntRunManager.variableColor + tntPlayer.getArena().getAllPlayers().size() + TntRunManager.mainColor + "/" + TntRunManager.otherColor + tntPlayer.getArena().getMaxPlayers();
+                return TntRunManager.mainColor + "Игроков: " + TntRunManager.variableColor + tntPlayer.getArena().getAllPlayers().size() + "§8/" + TntRunManager.otherColor + tntPlayer.getArena().getMaxPlayers();
             }
             
             @Override

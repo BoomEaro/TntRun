@@ -39,7 +39,7 @@ public final class TntRunManager implements IGameManager {
     private final TntRunStatistics stats = new TntRunStatistics();
     
     public static final ChatColor mainColor = GameManager.backgroundTextColor;
-    public static final ChatColor variableColor = ChatColor.of(new Color(255, 0, 0));
+    public static final ChatColor variableColor = ChatColor.of(new Color(255, 50, 0));
     public static final ChatColor otherColor = ChatColor.of(new Color(255, 0, 0));
     
     public static final String gameNameDys = "§8[" + variableColor + "TNTRun§8]";
