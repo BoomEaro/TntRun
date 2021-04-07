@@ -27,6 +27,8 @@ public class WaitingState implements IWaitingState {
     
     @Override 
     public void initState() {
+        this.arena.setForceStarted(false);
+        
         this.arena.sendMessages(TntRunManager.prefix + "Ожидание игроков..");
         
         for (TntPlayer tp : this.arena.getAllPlayers()) {
@@ -44,7 +46,8 @@ public class WaitingState implements IWaitingState {
     @Override
     public void autoUpdateHandler() {
         //Если мы набрали минимум то меняем статус
-        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() >= this.arena.getMinPlayers()) {
+        //Или если запущен принудительный старт
+        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() >= this.arena.getMinPlayers() || this.arena.isForceStarted()) {
             this.arena.setState(new StartingState(this.arena));
         }
         

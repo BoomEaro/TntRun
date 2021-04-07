@@ -18,6 +18,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
+import ru.boomearo.gamecontrol.objects.IForceStartable;
 import ru.boomearo.gamecontrol.objects.arena.ClipboardRegenableGameArena;
 import ru.boomearo.gamecontrol.objects.region.IRegion;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
@@ -26,7 +27,7 @@ import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.state.WaitingState;
 
-public class TntArena extends ClipboardRegenableGameArena implements ConfigurationSerializable {
+public class TntArena extends ClipboardRegenableGameArena implements IForceStartable, ConfigurationSerializable {
     private final int minPlayers;
     private final int maxPlayers;
     private final int timelimit;
@@ -38,6 +39,8 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
     
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
     
+    private boolean forceStarted = false;
+    
     public TntArena(String name, World world, Material icon, Location originCenter, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams) {
         super(name, world, icon, originCenter);
         this.minPlayers = minPlayers;
@@ -46,7 +49,17 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
         this.arenaRegion = arenaRegion;
         this.teams = teams;
     }
-    
+
+    @Override
+    public boolean isForceStarted() {
+        return this.forceStarted;
+    }
+
+    @Override
+    public void setForceStarted(boolean force) {
+        this.forceStarted = force;
+    }
+
     @Override
     public TntPlayer getGamePlayer(String name) {
         return this.players.get(name);
@@ -275,6 +288,5 @@ public class TntArena extends ClipboardRegenableGameArena implements Configurati
         
         return new TntArena(name, world, icon, arenaCenter, minPlayers, maxPlayers, timeLimit, region, nTeams);
     }
-
 
 }

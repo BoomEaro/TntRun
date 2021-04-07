@@ -75,11 +75,14 @@ public class StartingState implements IStartingState, ICountable {
             //Если прошло 30 сек
             if (this.count <= 0) {
                 
-                //Если игроков не достаточно для игры, то возвращаемся в ожидание
-                if (this.arena.getAllPlayersType(PlayingPlayer.class).size() < this.arena.getMinPlayers()) {
-                    this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для старта!");
-                    this.arena.setState(new WaitingState(this.arena));
-                    return;
+                //Если игра НЕ была запущена принудительно
+                if (!this.arena.isForceStarted()) {
+                    //Если игроков не достаточно для игры, то возвращаемся в ожидание
+                    if (this.arena.getAllPlayersType(PlayingPlayer.class).size() < this.arena.getMinPlayers()) {
+                        this.arena.sendMessages(TntRunManager.prefix + "Не достаточно игроков для старта!");
+                        this.arena.setState(new WaitingState(this.arena));
+                        return;
+                    }
                 }
                 
                 
