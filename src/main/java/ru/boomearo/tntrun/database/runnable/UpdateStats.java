@@ -13,26 +13,25 @@ public class UpdateStats extends BukkitRunnable {
 
     private final TntStatsType type;
     private final StatsPlayer player;
-    
+
     public UpdateStats(TntStatsType type, StatsPlayer player) {
         this.player = player;
         this.type = type;
         runnable();
     }
-    
-	
-	private void runnable() {
-		this.runTaskAsynchronously(TntRun.getInstance());
-	}
-	
-	@Override
-	public void run() {
-		try {
-			Sql.getInstance().updateStatsData(this.type, this.player.getName(), this.player.getValue());
-		} 
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
+    private void runnable() {
+        this.runTaskAsynchronously(TntRun.getInstance());
+    }
+
+    @Override
+    public void run() {
+        try {
+            Sql.getInstance().updateStatsData(this.type, this.player.getName(), this.player.getValue());
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

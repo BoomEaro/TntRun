@@ -41,7 +41,7 @@ public class TntLobbyPage extends AbstractPage {
 
     @Override
     protected List<AbstractHolder> createHolders() {
-        List<AbstractHolder> holders = new ArrayList<AbstractHolder>();
+        List<AbstractHolder> holders = new ArrayList<>();
         
         holders.add(new AbstractHolder(this) {
 

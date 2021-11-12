@@ -21,7 +21,7 @@ public class TntPageList extends AbstractPageList {
 
     @Override
     protected List<AbstractPage> createPages() {
-        List<AbstractPage> pages = new ArrayList<AbstractPage>();
+        List<AbstractPage> pages = new ArrayList<>();
         
         pages.add(new TntLobbyPage(this, this.tntPlayer));
         pages.add(new TntGamePage(this, this.tntPlayer));

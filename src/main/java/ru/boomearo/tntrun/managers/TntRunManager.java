@@ -32,24 +32,24 @@ import ru.boomearo.tntrun.objects.state.SpectatorFirst;
 
 public final class TntRunManager implements IGameManager {
 
-    private final ConcurrentMap<String, TntArena> arenas = new ConcurrentHashMap<String, TntArena>();
+    private final ConcurrentMap<String, TntArena> arenas = new ConcurrentHashMap<>();
 
-    private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
-    
+    private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<>();
+
     private final TntRunStatistics stats = new TntRunStatistics();
-    
+
     public static final ChatColor mainColor = GameManager.backgroundTextColor;
     public static final ChatColor variableColor = ChatColor.of(new Color(255, 50, 0));
     public static final ChatColor otherColor = ChatColor.of(new Color(255, 0, 0));
-    
+
     public static final String gameNameDys = "§8[" + variableColor + "TNTRun§8]";
     public static final String prefix = gameNameDys + ": " + mainColor;
-    
+
     public static final double winReward = 10;
 
     public TntRunManager() {
         loadArenas();
-        
+
     }
 
     @Override
@@ -61,7 +61,7 @@ public final class TntRunManager implements IGameManager {
     public String getGameDisplayName() {
         return gameNameDys;
     }
-    
+
     @Override
     public ChatColor getMainColor() {
         return mainColor;
@@ -102,18 +102,18 @@ public final class TntRunManager implements IGameManager {
         if (count >= tmpArena.getMaxPlayers()) {
             throw new PlayerGameException("Карта " + mainColor + "'" + variableColor + arena + mainColor + "' переполнена!");
         }
-        
+
         TntTeam team = tmpArena.getFreeTeam();
         if (team == null) {
             throw new ConsoleGameException("Не найдено свободных команд!");
         }
-        
+
         IGameState state = tmpArena.getState();
 
         IPlayerType type;
-        
+
         boolean isSpec;
-        
+
         //Если статус игры реализует это, значит добавляем игрока в наблюдатели сначала
         if (state instanceof SpectatorFirst) {
             type = new LosePlayer();
@@ -123,13 +123,13 @@ public final class TntRunManager implements IGameManager {
             type = new PlayingPlayer();
             isSpec = false;
         }
-        
+
         //Создаем игрока
         TntPlayer newTp = new TntPlayer(pl.getName(), pl, type, tmpArena, team);
 
         //Добавляем в команду
         team.setPlayer(newTp);
-        
+
         //Добавляем в арену
         tmpArena.addPlayer(newTp);
 
@@ -138,29 +138,29 @@ public final class TntRunManager implements IGameManager {
 
         //Обрабатываем игрока
         type.preparePlayer(newTp);
-        
+
         if (isSpec) {
             newTp.sendBoard(1);
-            
+
             pl.sendMessage(prefix + "Вы присоединились к карте " + mainColor + "'" + variableColor + arena + mainColor + "' как наблюдатель.");
             pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз " + variableColor + "кнопку " + mainColor + "'" + variableColor + "1" + mainColor + "' или " + variableColor + "телепортируйтесь к любому игроку " + mainColor + "используя возможность наблюдателя.");
-            
+
             tmpArena.sendMessages(prefix + pl.getDisplayName() + mainColor + " присоединился к игре как наблюдатель!");
         }
         else {
             newTp.sendBoard(0);
-            
+
             pl.sendMessage(prefix + "Вы присоединились к карте " + mainColor + "'" + variableColor + arena + mainColor + "'!");
             pl.sendMessage(prefix + "Чтобы покинуть игру, используйте " + variableColor + "Магма крем " + mainColor + "или команду " + variableColor + "/lobby" + variableColor + ".");
-            
+
             int currCount = tmpArena.getAllPlayersType(PlayingPlayer.class).size();
             if (currCount < tmpArena.getMinPlayers()) {
                 pl.sendMessage(prefix + "Ожидание " + variableColor + (tmpArena.getMinPlayers() - currCount) + mainColor + " игроков для начала игры...");
-            } 
-            
+            }
+
             tmpArena.sendMessages(prefix + pl.getDisplayName() + mainColor + " присоединился к игре! " + getRemainPlayersArena(tmpArena, PlayingPlayer.class), pl.getName());
         }
-        
+
         return newTp;
     }
 
@@ -176,12 +176,12 @@ public final class TntRunManager implements IGameManager {
         }
 
         TntTeam team = tmpPlayer.getTeam();
-        
+
         //Удаляем у тимы игрока
         team.setPlayer(null);
-        
+
         TntArena arena = tmpPlayer.getArena();
-        
+
         arena.removePlayer(pl.getName());
 
         this.players.remove(pl.getName());
@@ -198,9 +198,9 @@ public final class TntRunManager implements IGameManager {
 
     private static void handlePlayerLeave(Player pl, TntPlayer player, TntArena arena) {
         player.sendBoard(null);
-        
+
         pl.sendMessage(prefix + "Вы покинули игру!");
-        
+
         IPlayerType type = player.getPlayerType();
         if (type instanceof PlayingPlayer) {
             arena.sendMessages(prefix + pl.getDisplayName() + mainColor + " покинул игру! " + getRemainPlayersArena(arena, PlayingPlayer.class), pl.getName());
@@ -208,9 +208,9 @@ public final class TntRunManager implements IGameManager {
         else {
             arena.sendMessages(prefix + pl.getDisplayName() + mainColor + " покинул игру!", pl.getName());
         }
-        
+
     }
-    
+
     @Override
     public TntPlayer getGamePlayer(String name) {
         return this.players.get(name);
@@ -220,17 +220,17 @@ public final class TntRunManager implements IGameManager {
     public TntArena getGameArena(String name) {
         return this.arenas.get(name);
     }
-    
+
     @Override
     public Collection<TntArena> getAllArenas() {
         return this.arenas.values();
     }
-    
+
     @Override
     public Collection<TntPlayer> getAllPlayers() {
         return this.players.values();
     }
-    
+
     @Override
     public TntRunStatistics getStatisticManager() {
         return this.stats;
@@ -244,7 +244,7 @@ public final class TntRunManager implements IGameManager {
         }
         return null;
     }
-    
+
     @SuppressWarnings("unchecked")
     public void loadArenas() {
 
@@ -254,7 +254,7 @@ public final class TntRunManager implements IGameManager {
             for (TntArena ar : arenas) {
                 try {
                     addArena(ar);
-                } 
+                }
                 catch (GameControlException e) {
                     e.printStackTrace();
                 }
@@ -296,7 +296,7 @@ public final class TntRunManager implements IGameManager {
 
         this.arenas.remove(name);
     }
-    
+
     public static String getRemainPlayersArena(TntArena arena, Class<? extends IPlayerType> clazz) {
         return "§8[" + variableColor + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + mainColor + "/" + otherColor + arena.getMaxPlayers() + "§8]";
     }

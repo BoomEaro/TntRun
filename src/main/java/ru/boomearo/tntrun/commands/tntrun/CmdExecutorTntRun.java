@@ -15,65 +15,57 @@ import ru.boomearo.tntrun.objects.TntArena;
 
 public class CmdExecutorTntRun extends AbstractExecutor {
 
-	public CmdExecutorTntRun() {
-		super(new TntRunUse());
-	}
+    public CmdExecutorTntRun() {
+        super(new TntRunUse());
+    }
 
-	@Override
-	public boolean zeroArgument(CommandSender sender, CmdList cmds) {
-		cmds.sendUsageCmds(sender);
-		return true;
-	}
+    @Override
+    public boolean zeroArgument(CommandSender sender, CmdList cmds) {
+        cmds.sendUsageCmds(sender);
+        return true;
+    }
 
-	private static final List<String> empty = new ArrayList<>();
+    private static final List<String> empty = new ArrayList<>();
 
-	@Override
-	public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
-        if (arg3.length == 1) {
-            List<String> ss = new ArrayList<String>(Arrays.asList("join", "leave", "list"));
-            if (arg0.hasPermission("tntrun.admin")) {
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 1) {
+            List<String> ss = new ArrayList<>(Arrays.asList("join", "leave", "list"));
+            if (sender.hasPermission("tntrun.admin")) {
                 ss.add("createarena");
                 ss.add("setspawnpoint");
             }
             List<String> matches = new ArrayList<>();
-            String search = arg3[0].toLowerCase();
-            for (String se : ss)
-            {
-                if (se.toLowerCase().startsWith(search))
-                {
+            String search = args[0].toLowerCase();
+            for (String se : ss) {
+                if (se.toLowerCase().startsWith(search)) {
                     matches.add(se);
                 }
             }
             return matches;
         }
-        if (arg3.length == 2) {
-            if (arg3[0].equalsIgnoreCase("join")) {
-                List<String> ss = new ArrayList<String>();
-                for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
-                    ss.add(arena.getName());
-                }
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("join")) {
                 List<String> matches = new ArrayList<>();
-                String search = arg3[1].toLowerCase();
-                for (String se : ss)
-                {
-                    if (se.toLowerCase().startsWith(search))
-                    {
-                        matches.add(se);
+                String search = args[1].toLowerCase();
+                for (TntArena arena : TntRun.getInstance().getTntRunManager().getAllArenas()) {
+                    if (arena.getName().toLowerCase().startsWith(search)) {
+                        matches.add(arena.getName());
                     }
                 }
                 return matches;
             }
         }
         return empty;
-	}
+    }
 
-	@Override
-	public String getPrefix() {
-		return TntRunManager.prefix;
-	}
+    @Override
+    public String getPrefix() {
+        return TntRunManager.prefix;
+    }
 
-	@Override
-	public String getSuffix() {
-		return " §8-" + TntRunManager.variableColor + " ";
-	}
+    @Override
+    public String getSuffix() {
+        return " §8-" + TntRunManager.variableColor + " ";
+    }
 }

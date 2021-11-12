@@ -19,7 +19,7 @@ public class PlayerButtonListener implements Listener {
         TntPlayer tp = TntRun.getInstance().getTntRunManager().getGamePlayer(pl.getName());
         if (tp != null) {
             e.setCancelled(true);
-            
+
             Action ac = e.getAction();
             if (ac == Action.RIGHT_CLICK_AIR || ac == Action.RIGHT_CLICK_BLOCK) {
                 ItemStack item = e.getItem();
@@ -32,5 +32,5 @@ public class PlayerButtonListener implements Listener {
             }
         }
     }
-    
+
 }

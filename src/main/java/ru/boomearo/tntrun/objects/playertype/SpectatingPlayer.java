@@ -14,16 +14,16 @@ public class SpectatingPlayer implements IPlayerType {
     @Override
     public void preparePlayer(TntPlayer player) {
         Player pl = player.getPlayer();
-        
+
         pl.setFoodLevel(20);
         pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        
+
         pl.setGameMode(GameMode.SPECTATOR);
-        
+
         ExpFix.setTotalExperience(player.getPlayer(), 0);
-        
+
         pl.getInventory().clear();
-        
+
         TntTeam team = player.getTeam();
         Location loc = team.getSpawnPoint();
         if (loc != null) {

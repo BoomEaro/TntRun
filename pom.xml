@@ -54,7 +54,9 @@
             <artifactId>FAWE</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/minecraft/other/FastAsyncWorldEdit/worldedit-bukkit/build/libs/FastAsyncWorldEdit-Bukkit-1.17-14cb97d.jar</systemPath>
+            <systemPath>
+                C:/Users/mm123/git/minecraft/other/FastAsyncWorldEdit/worldedit-bukkit/build/libs/FastAsyncWorldEdit-Bukkit-1.17-14cb97d.jar
+            </systemPath>
         </dependency>
     </dependencies>
 </project>

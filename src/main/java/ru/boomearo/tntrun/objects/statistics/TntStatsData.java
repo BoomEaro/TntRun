@@ -10,13 +10,13 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 public class TntStatsData implements IStatsData {
 
     private final TntStatsType type;
-    
-    private final ConcurrentMap<String, StatsPlayer> players = new ConcurrentHashMap<String, StatsPlayer>();
-    
+
+    private final ConcurrentMap<String, StatsPlayer> players = new ConcurrentHashMap<>();
+
     public TntStatsData(TntStatsType type) {
         this.type = type;
     }
-    
+
     @Override
     public String getName() {
         return this.type.name();
@@ -35,7 +35,7 @@ public class TntStatsData implements IStatsData {
     public TntStatsType getType() {
         return this.type;
     }
-    
+
     public void addStatsPlayer(StatsPlayer data) {
         this.players.put(data.getName(), data);
     }

@@ -19,36 +19,36 @@ public enum ItemButton {
         public void click(TntPlayer player) {
             try {
                 GameControl.getInstance().getGameManager().leaveGame(player.getPlayer());
-            } 
+            }
             catch (GameControlException e) {
                 e.printStackTrace();
             }
         }
-        
+
     });
-    
-    private ItemStack item;
-    private int slot;
-    private ButtonClick click;
-    
+
+    private final ItemStack item;
+    private final int slot;
+    private final ButtonClick click;
+
     ItemButton(ItemStack item, int slot, ButtonClick click) {
         this.item = item;
         this.slot = slot;
         this.click = click;
     }
-    
+
     public ItemStack getItem() {
         return this.item.clone();
     }
-    
+
     public int getSlot() {
         return this.slot;
     }
-    
+
     public ButtonClick getClick() {
         return this.click;
     }
-    
+
     private static ItemStack createLeaveButton() {
         ItemStack item = new ItemStack(Material.MAGMA_CREAM, 1);
         ItemMeta meta = item.getItemMeta();
@@ -57,10 +57,10 @@ public enum ItemButton {
         meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
         meta.addItemFlags(ItemFlag.values());
         item.setItemMeta(meta);
-        
+
         return item;
     }
-    
+
     public static ItemButton getButtonByItem(ItemStack item) {
         for (ItemButton ib : values()) {
             if (ib.getItem().isSimilar(item)) {
@@ -69,7 +69,7 @@ public enum ItemButton {
         }
         return null;
     }
-    
+
     public static interface ButtonClick {
         public void click(TntPlayer player);
     }

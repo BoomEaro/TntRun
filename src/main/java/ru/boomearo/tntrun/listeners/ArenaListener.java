@@ -16,18 +16,18 @@ public class ArenaListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntitySpawnEvent(EntitySpawnEvent e) {
         Location loc = e.getLocation();
-        
+
         TntArena arena = TntRun.getInstance().getTntRunManager().getArenaByLocation(loc);
         if (arena != null) {
-            
+
             IGameState state = arena.getState();
             if (state instanceof RunningState) {
                 e.setCancelled(false);
                 return;
             }
-            
+
             e.setCancelled(true);
-        } 
+        }
     }
-    
+
 }

@@ -42,7 +42,7 @@ public class TntGamePage extends AbstractPage {
 
     @Override
     protected List<AbstractHolder> createHolders() {
-        List<AbstractHolder> holders = new ArrayList<AbstractHolder>();
+        List<AbstractHolder> holders = new ArrayList<>();
 
         holders.add(new AbstractHolder(this) {
 
@@ -99,13 +99,11 @@ public class TntGamePage extends AbstractPage {
             @Override
             protected String getText() {
                 IGameState state = tntPlayer.getArena().getState();
-                if (state instanceof RunningState) {
-                    RunningState rs = (RunningState) state;
+                if (state instanceof RunningState rs) {
 
                     return TntRunManager.mainColor + "До конца: " + TntRunManager.variableColor + getFormattedTimeLeft(rs.getCount());
                 }
-                else if (state instanceof EndingState) {
-                    EndingState es = (EndingState) state;
+                else if (state instanceof EndingState es) {
                     return TntRunManager.mainColor + "Новая игра: " + TntRunManager.variableColor+ getFormattedTimeLeft(es.getCount());
                 }
                 return " ";

@@ -30,22 +30,22 @@ import ru.boomearo.tntrun.objects.state.WaitingState;
 public class TntArena extends ClipboardRegenableGameArena implements IForceStartable, ConfigurationSerializable {
     private final int minPlayers;
     private final int maxPlayers;
-    private final int timelimit;
-    
+    private final int timeLimit;
+
     private final IRegion arenaRegion;
     private final ConcurrentMap<Integer, TntTeam> teams;
- 
+
     private volatile IGameState state = new WaitingState(this);
-    
-    private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<String, TntPlayer>();
-    
+
+    private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<>();
+
     private boolean forceStarted = false;
-    
+
     public TntArena(String name, World world, Material icon, Location originCenter, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, ConcurrentMap<Integer, TntTeam> teams) {
         super(name, world, icon, originCenter);
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
-        this.timelimit = timeLimit;
+        this.timeLimit = timeLimit;
         this.arenaRegion = arenaRegion;
         this.teams = teams;
     }
@@ -64,48 +64,48 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
     public TntPlayer getGamePlayer(String name) {
         return this.players.get(name);
     }
-    
+
     @Override
     public Collection<TntPlayer> getAllPlayers() {
         return this.players.values();
     }
-    
+
     @Override
     public TntRunManager getManager() {
         return TntRun.getInstance().getTntRunManager();
     }
-    
+
     @Override
     public IGameState getState() {
         return this.state;
     }
-    
+
     @Override
     public int getMinPlayers() {
         return this.minPlayers;
     }
-    
+
     @Override
     public int getMaxPlayers() {
         return this.maxPlayers;
     }
-    
+
     public int getTimeLimit() {
-        return this.timelimit;
+        return this.timeLimit;
     }
-    
+
     public IRegion getArenaRegion() {
         return this.arenaRegion;
     }
-    
+
     public TntTeam getTeamById(int id) {
         return this.teams.get(id);
     }
-    
+
     public Collection<TntTeam> getAllTeams() {
         return this.teams.values();
     }
-    
+
     public TntTeam getFreeTeam() {
         for (TntTeam team : this.teams.values()) {
             if (team.getPlayer() == null) {
@@ -118,22 +118,23 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
     public void setState(IGameState state) {
         //Устанавливаем новое
         this.state = state;
-        
+
         //Инициализируем новое
         this.state.initState();
     }
-    
+
     public void addPlayer(TntPlayer player) {
         this.players.put(player.getName(), player);
     }
-    
+
     public void removePlayer(String name) {
         this.players.remove(name);
     }
-    
+
     public void sendMessages(String msg) {
         sendMessages(msg, null);
     }
+
     public void sendMessages(String msg, String ignore) {
         for (TntPlayer tp : this.players.values()) {
             if (ignore != null) {
@@ -141,14 +142,14 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
                     continue;
                 }
             }
-            
+
             Player pl = tp.getPlayer();
             if (pl.isOnline()) {
                 pl.sendMessage(msg);
             }
         }
     }
-    
+
     public void sendLevels(int level) {
         if (Bukkit.isPrimaryThread()) {
             handleSendLevels(level);
@@ -159,7 +160,7 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
             });
         }
     }
-    
+
     public void sendSounds(Sound sound, float volume, float pitch, Location loc) {
         for (TntPlayer tp : this.players.values()) {
             Player pl = tp.getPlayer();
@@ -168,11 +169,11 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
             }
         }
     }
-    
+
     public void sendSounds(Sound sound, float volume, float pitch) {
         sendSounds(sound, volume, pitch, null);
     }
-    
+
     private void handleSendLevels(int level) {
         for (TntPlayer tp : this.players.values()) {
             Player pl = tp.getPlayer();
@@ -181,9 +182,9 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
             }
         }
     }
-    
+
     public Collection<TntPlayer> getAllPlayersType(Class<? extends IPlayerType> clazz) {
-        Set<TntPlayer> tmp = new HashSet<TntPlayer>();
+        Set<TntPlayer> tmp = new HashSet<>();
         for (TntPlayer tp : this.players.values()) {
             if (tp.getPlayerType().getClass() == clazz) {
                 tmp.add(tp);
@@ -191,7 +192,7 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
         }
         return tmp;
     }
-    
+
     public void sendTitle(String first, String second, int in, int stay, int out) {
         for (TntPlayer sp : this.players.values()) {
             Player pl = sp.getPlayer();
@@ -200,27 +201,27 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
             }
         }
     }
-    
+
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
+        Map<String, Object> result = new LinkedHashMap<>();
 
         result.put("name", getName());
         result.put("icon", getIcon().name());
         result.put("minPlayers", this.minPlayers);
         result.put("maxPlayers", this.maxPlayers);
-        result.put("timeLimit", this.timelimit);
-        
+        result.put("timeLimit", this.timeLimit);
+
         result.put("world", getWorld().getName());
         result.put("region", this.arenaRegion);
-        
-        List<TntTeam> t = new ArrayList<TntTeam>(this.teams.values());
+
+        List<TntTeam> t = new ArrayList<>(this.teams.values());
         result.put("teams", t);
         result.put("arenaCenter", getOriginCenter());
-        
+
         return result;
     }
-    
+
     @SuppressWarnings("unchecked")
     public static TntArena deserialize(Map<String, Object> args) {
         String name = null;
@@ -230,20 +231,21 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
         int timeLimit = 300;
         World world = null;
         IRegion region = null;
-        List<TntTeam> teams = new ArrayList<TntTeam>();
+        List<TntTeam> teams = new ArrayList<>();
         Location arenaCenter = null;
 
         Object na = args.get("name");
         if (na != null) {
             name = (String) na;
         }
-        
+
         Object ic = args.get("icon");
         if (ic != null) {
             try {
                 icon = Material.valueOf((String) ic);
             }
-            catch (Exception e) {}
+            catch (Exception ignored) {
+            }
         }
 
         Object minp = args.get("minPlayers");
@@ -260,7 +262,7 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
         if (tl != null) {
             timeLimit = ((Number) tl).intValue();
         }
-        
+
         Object wo = args.get("world");
         if (wo != null) {
             world = Bukkit.getWorld((String) wo);
@@ -281,11 +283,11 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
             arenaCenter = (Location) ac;
         }
 
-        ConcurrentMap<Integer, TntTeam> nTeams = new ConcurrentHashMap<Integer, TntTeam>();
+        ConcurrentMap<Integer, TntTeam> nTeams = new ConcurrentHashMap<>();
         for (TntTeam team : teams) {
             nTeams.put(team.getId(), team);
         }
-        
+
         return new TntArena(name, world, icon, arenaCenter, minPlayers, maxPlayers, timeLimit, region, nTeams);
     }
 
