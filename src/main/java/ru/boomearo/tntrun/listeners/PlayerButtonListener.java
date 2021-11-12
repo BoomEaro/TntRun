@@ -26,7 +26,7 @@ public class PlayerButtonListener implements Listener {
                 if (item != null) {
                     ItemButton ib = ItemButton.getButtonByItem(item);
                     if (ib != null) {
-                        ib.getClick().click(tp);
+                        ib.handleClick(tp);
                     }
                 }
             }

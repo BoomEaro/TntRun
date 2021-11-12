@@ -13,10 +13,22 @@ import ru.boomearo.gamecontrol.exceptions.GameControlException;
 
 public enum ItemButton {
 
-    Leave(createLeaveButton(), 8, new ButtonClick() {
+    LEAVE(8) {
 
         @Override
-        public void click(TntPlayer player) {
+        public ItemStack getItem() {
+            ItemStack item = new ItemStack(Material.MAGMA_CREAM, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§cПокинуть игру §8[§cПКМ§8]");
+            meta.setLore(Arrays.asList("§fКликните чтобы покинуть игру."));
+            meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
+            meta.addItemFlags(ItemFlag.values());
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        @Override
+        public void handleClick(TntPlayer player) {
             try {
                 GameControl.getInstance().getGameManager().leaveGame(player.getPlayer());
             }
@@ -25,41 +37,20 @@ public enum ItemButton {
             }
         }
 
-    });
+    };
 
-    private final ItemStack item;
     private final int slot;
-    private final ButtonClick click;
 
-    ItemButton(ItemStack item, int slot, ButtonClick click) {
-        this.item = item;
+    ItemButton(int slot) {
         this.slot = slot;
-        this.click = click;
-    }
-
-    public ItemStack getItem() {
-        return this.item.clone();
     }
 
     public int getSlot() {
         return this.slot;
     }
 
-    public ButtonClick getClick() {
-        return this.click;
-    }
-
-    private static ItemStack createLeaveButton() {
-        ItemStack item = new ItemStack(Material.MAGMA_CREAM, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§cПокинуть игру §8[§cПКМ§8]");
-        meta.setLore(Arrays.asList("§fКликните чтобы покинуть игру."));
-        meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
-        meta.addItemFlags(ItemFlag.values());
-        item.setItemMeta(meta);
-
-        return item;
-    }
+    public abstract ItemStack getItem();
+    public abstract void handleClick(TntPlayer player);
 
     public static ItemButton getButtonByItem(ItemStack item) {
         for (ItemButton ib : values()) {
@@ -70,7 +61,4 @@ public enum ItemButton {
         return null;
     }
 
-    public static interface ButtonClick {
-        public void click(TntPlayer player);
-    }
 }
