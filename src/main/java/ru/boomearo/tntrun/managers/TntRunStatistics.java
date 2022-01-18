@@ -6,14 +6,13 @@ import java.util.concurrent.ConcurrentMap;
 
 import ru.boomearo.gamecontrol.objects.statistics.IStatisticsManager;
 import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
-import ru.boomearo.tntrun.database.runnable.PutStats;
-import ru.boomearo.tntrun.database.runnable.UpdateStats;
+import ru.boomearo.tntrun.database.Sql;
 import ru.boomearo.tntrun.objects.statistics.TntStatsData;
 import ru.boomearo.tntrun.objects.statistics.TntStatsType;
 
 public class TntRunStatistics implements IStatisticsManager {
 
-    private final ConcurrentMap<TntStatsType, TntStatsData> stats = new ConcurrentHashMap<TntStatsType, TntStatsData>();
+    private final ConcurrentMap<TntStatsType, TntStatsData> stats = new ConcurrentHashMap<>();
     
     public TntRunStatistics() {
         for (TntStatsType type : TntStatsType.values()) {
@@ -27,7 +26,7 @@ public class TntRunStatistics implements IStatisticsManager {
         try {
             type = TntStatsType.valueOf(name);
         }
-        catch (Exception e) {}
+        catch (Exception ignored) {}
         if (type == null) {
             return null;
         }
@@ -50,11 +49,11 @@ public class TntRunStatistics implements IStatisticsManager {
         if (sp == null) {
             StatsPlayer newSp = new StatsPlayer(name, 1);
             data.addStatsPlayer(newSp);
-            new PutStats(type, newSp);
+            Sql.getInstance().putStatsData(type, name, 1);
             return;
         }
         sp.setValue(sp.getValue() + 1);
-        new UpdateStats(type, sp);
+        Sql.getInstance().updateStatsData(type, name, sp.getValue());
     }
 
 }

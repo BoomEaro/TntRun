@@ -4,7 +4,7 @@ version: 0.1
 author: BoomEaro
 description: tntrun
 api-version: 1.13
-depend: [ FastAsyncWorldEdit, GameControl, Board ]
+depend: [ FastAsyncWorldEdit, GameControl, Board, ServerUtils ]
 commands:
   tntrun:
     usage: /tntrun

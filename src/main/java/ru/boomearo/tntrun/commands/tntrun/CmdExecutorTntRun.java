@@ -6,26 +6,26 @@ import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
+import ru.boomearo.serverutils.utils.other.commands.AbstractExecutor;
 import ru.boomearo.tntrun.TntRun;
-import ru.boomearo.tntrun.commands.AbstractExecutor;
-import ru.boomearo.tntrun.commands.CmdList;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 
-public class CmdExecutorTntRun extends AbstractExecutor {
+public class CmdExecutorTntRun extends AbstractExecutor implements TabCompleter {
+
+    private static final List<String> empty = new ArrayList<>();
 
     public CmdExecutorTntRun() {
         super(new TntRunUse());
     }
 
     @Override
-    public boolean zeroArgument(CommandSender sender, CmdList cmds) {
-        cmds.sendUsageCmds(sender);
+    public boolean zeroArgument(CommandSender sender) {
+        sendUsageCommands(sender);
         return true;
     }
-
-    private static final List<String> empty = new ArrayList<>();
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {

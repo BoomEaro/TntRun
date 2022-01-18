@@ -2,7 +2,7 @@ package ru.boomearo.tntrun.objects.state;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IEndingState;
-import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.serverutils.utils.other.DateUtil;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;

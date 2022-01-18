@@ -4,7 +4,7 @@ import org.bukkit.Sound;
 
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IStartingState;
-import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.serverutils.utils.other.DateUtil;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;

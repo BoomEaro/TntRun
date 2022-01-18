@@ -78,10 +78,10 @@ public class TntRun extends JavaPlugin {
     public void onDisable() {
         try {
             getLogger().info("Отключаюсь от базы данных");
-            Sql.getInstance().Disconnect();
+            Sql.getInstance().disconnect();
             getLogger().info("Успешно отключился от базы данных");
         }
-        catch (SQLException e) {
+        catch (Exception e) {
             e.printStackTrace();
             getLogger().info("Не удалось отключиться от базы данных...");
         }
@@ -109,9 +109,7 @@ public class TntRun extends JavaPlugin {
 
         }
         try {
-            for (TntStatsType type : TntStatsType.values()) {
-                Sql.getInstance().createNewDatabaseStatsData(type);
-            }
+            Sql.initSql();
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -122,12 +120,12 @@ public class TntRun extends JavaPlugin {
         try {
             for (TntStatsType type : TntStatsType.values()) {
                 TntStatsData data = this.arenaManager.getStatisticManager().getStatsData(type);
-                for (SectionStats stats : Sql.getInstance().getAllStatsData(type)) {
+                for (SectionStats stats : Sql.getInstance().getAllStatsData(type).get()) {
                     data.addStatsPlayer(new StatsPlayer(stats.name, stats.value));
                 }
             }
         }
-        catch (SQLException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

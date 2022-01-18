@@ -41,7 +41,7 @@ public class TntTeam implements ConfigurationSerializable {
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
+        Map<String, Object> result = new LinkedHashMap<>();
 
         result.put("id", this.id);
         result.put("spawnPoint", this.loc);

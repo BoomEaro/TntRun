@@ -245,7 +245,6 @@ public final class TntRunManager implements IGameManager {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     public void loadArenas() {
 
         FileConfiguration fc = TntRun.getInstance().getConfig();

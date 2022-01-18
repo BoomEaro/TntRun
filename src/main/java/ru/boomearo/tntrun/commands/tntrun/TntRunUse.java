@@ -19,13 +19,14 @@ import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.region.CuboidRegion;
+import ru.boomearo.serverutils.utils.other.commands.CmdInfo;
+import ru.boomearo.serverutils.utils.other.commands.Commands;
 import ru.boomearo.tntrun.TntRun;
-import ru.boomearo.tntrun.commands.CmdInfo;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntTeam;
 
-public class TntRunUse {
+public class TntRunUse implements Commands {
 
     @CmdInfo(name = "createarena", description = "Создать арену с указанным названием.", usage = "/tntrun createarena <название>", permission = "tntrun.admin")
     public boolean createarena(CommandSender cs, String[] args) {
