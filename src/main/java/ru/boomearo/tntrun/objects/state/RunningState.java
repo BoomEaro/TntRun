@@ -16,11 +16,14 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.util.NumberConversions;
 
+import ru.boomearo.adveco.AdvEco;
+import ru.boomearo.adveco.exceptions.EcoException;
+import ru.boomearo.adveco.managers.EcoManager;
+import ru.boomearo.adveco.objects.EcoType;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
-import ru.boomearo.gamecontrol.utils.Vault;
 import ru.boomearo.serverutils.utils.other.DateUtil;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
@@ -170,9 +173,15 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     //В зависимости от того сколько игроков ПРОИГРАЛО мы получим награду.
                     double reward = TntRunManager.winReward + (this.deathPlayers * TntRunManager.winReward);
 
-                    Vault.addMoney(winner.getName(), reward);
 
-                    winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: " + GameControl.getFormatedEco(reward));
+                    try {
+                        AdvEco.getInstance().getEcoManager().addPlayerEco(winner.getName(), winner.getPlayer(), EcoType.Credit, reward);
+                    }
+                    catch (EcoException e) {
+                        e.printStackTrace();
+                    }
+
+                    winner.getPlayer().sendMessage(TntRunManager.prefix + "Ваша награда за победу: " + EcoManager.getFormatedEco(reward, EcoType.Credit));
 
                     this.arena.setState(new EndingState(this.arena));
                     return;
