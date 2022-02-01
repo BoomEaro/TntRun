@@ -3,7 +3,6 @@ package ru.boomearo.tntrun.objects.state;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.states.AbstractRegenState;
-import ru.boomearo.gamecontrol.runnable.RegenTask;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
@@ -32,7 +31,7 @@ public class RegenState extends AbstractRegenState implements SpectatorFirst {
 
         try {
             setWaitingRegen(true);
-            GameControl.getInstance().getGameManager().queueRegenArena(new RegenTask(this.arena));
+            GameControl.getInstance().getGameManager().queueRegenArena(this.arena);
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
