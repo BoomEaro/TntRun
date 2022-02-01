@@ -21,13 +21,10 @@ import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.statistics.TntStatsData;
 import ru.boomearo.tntrun.objects.statistics.TntStatsType;
-import ru.boomearo.tntrun.runnable.ArenasRunnable;
 
 public class TntRun extends JavaPlugin {
 
     private TntRunManager arenaManager = null;
-
-    private ArenasRunnable pmr = null;
 
     private static TntRun instance = null;
 
@@ -66,10 +63,6 @@ public class TntRun extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerButtonListener(), this);
 
         getServer().getPluginManager().registerEvents(new SpectatorListener(), this);
-
-        if (this.pmr == null) {
-            this.pmr = new ArenasRunnable();
-        }
 
         getLogger().info("Плагин успешно запущен.");
     }
