@@ -22,10 +22,12 @@ import ru.boomearo.adveco.managers.EcoManager;
 import ru.boomearo.adveco.objects.EcoType;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
-import ru.boomearo.gamecontrol.objects.states.ICountable;
-import ru.boomearo.gamecontrol.objects.states.IRunningState;
+import ru.boomearo.gamecontrol.objects.states.game.ICountable;
+import ru.boomearo.gamecontrol.objects.states.game.IRunningState;
+import ru.boomearo.gamecontrol.objects.states.perms.SpectatorFirst;
 import ru.boomearo.serverutils.utils.other.DateUtil;
 import ru.boomearo.tntrun.TntRun;
+import ru.boomearo.tntrun.board.TntPLGame;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.managers.TntRunStatistics;
 import ru.boomearo.tntrun.objects.TntArena;
@@ -75,7 +77,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayerType().preparePlayer(tp);
 
-            tp.sendBoard(1);
+            tp.sendBoard((playerBoard) -> new TntPLGame(playerBoard, tp));
         }
 
         this.arena.sendMessages(TntRunManager.prefix + "Игра началась. Удачи!");

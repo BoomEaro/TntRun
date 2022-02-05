@@ -6,7 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
-import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.objects.states.game.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.state.RunningState;

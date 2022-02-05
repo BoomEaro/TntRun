@@ -7,32 +7,33 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.md_5.bungee.api.ChatColor;
-import ru.boomearo.gamecontrol.GameControl;
+
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.managers.GameManager;
 import ru.boomearo.gamecontrol.objects.IGameManager;
 import ru.boomearo.gamecontrol.objects.defactions.IDefaultAction;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
 
+import ru.boomearo.gamecontrol.objects.states.game.IGameState;
+import ru.boomearo.gamecontrol.objects.states.perms.SpectatorFirst;
 import ru.boomearo.tntrun.TntRun;
+import ru.boomearo.tntrun.board.TntPLGame;
+import ru.boomearo.tntrun.board.TntPLLobby;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
-import ru.boomearo.tntrun.objects.state.SpectatorFirst;
 
-public final class TntRunManager implements IGameManager {
+public final class TntRunManager implements IGameManager<TntPlayer> {
 
     private final ConcurrentMap<String, TntArena> arenas = new ConcurrentHashMap<>();
 
@@ -51,7 +52,6 @@ public final class TntRunManager implements IGameManager {
 
     public TntRunManager() {
         loadArenas();
-
     }
 
     @Override
@@ -144,7 +144,7 @@ public final class TntRunManager implements IGameManager {
         type.preparePlayer(newTp);
 
         if (isSpec) {
-            newTp.sendBoard(1);
+            newTp.sendBoard((playerBoard) -> new TntPLGame(playerBoard, newTp));
 
             pl.sendMessage(prefix + "Вы присоединились к карте " + mainColor + "'" + variableColor + arena + mainColor + "' как наблюдатель.");
             pl.sendMessage(prefix + "Чтобы покинуть игру, используйте несколько раз " + variableColor + "кнопку " + mainColor + "'" + variableColor + "1" + mainColor + "' или " + variableColor + "телепортируйтесь к любому игроку " + mainColor + "используя возможность наблюдателя.");
@@ -152,7 +152,7 @@ public final class TntRunManager implements IGameManager {
             tmpArena.sendMessages(prefix + pl.getDisplayName() + mainColor + " присоединился к игре как наблюдатель!");
         }
         else {
-            newTp.sendBoard(0);
+            newTp.sendBoard((playerBoard) -> new TntPLLobby(playerBoard, newTp));
 
             pl.sendMessage(prefix + "Вы присоединились к карте " + mainColor + "'" + variableColor + arena + mainColor + "'!");
             pl.sendMessage(prefix + "Чтобы покинуть игру, используйте " + variableColor + "Магма крем " + mainColor + "или команду " + variableColor + "/lobby" + variableColor + ".");
@@ -258,7 +258,7 @@ public final class TntRunManager implements IGameManager {
     public void saveArenas() {
         FileConfiguration fc = TntRun.getInstance().getConfig();
 
-        List<TntArena> tmp = new ArrayList<TntArena>(this.arenas.values());
+        List<TntArena> tmp = new ArrayList<>(this.arenas.values());
         fc.set("arenas", tmp);
 
         TntRun.getInstance().saveConfig();

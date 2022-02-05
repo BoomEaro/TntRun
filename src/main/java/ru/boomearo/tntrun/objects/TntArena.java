@@ -13,31 +13,24 @@ import java.util.concurrent.ConcurrentMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Player;
 
 import ru.boomearo.gamecontrol.objects.IForceStartable;
 import ru.boomearo.gamecontrol.objects.arena.ClipboardRegenableGameArena;
 import ru.boomearo.gamecontrol.objects.region.IRegion;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.state.WaitingState;
 
-public class TntArena extends ClipboardRegenableGameArena implements IForceStartable, ConfigurationSerializable {
+public class TntArena extends ClipboardRegenableGameArena<TntPlayer> implements IForceStartable, ConfigurationSerializable {
     private final int minPlayers;
     private final int maxPlayers;
     private final int timeLimit;
 
     private final IRegion arenaRegion;
     private final ConcurrentMap<Integer, TntTeam> teams;
-
-    private volatile IGameState state = new WaitingState(this);
-
-    private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<>();
 
     private boolean forceStarted = false;
 
@@ -48,6 +41,8 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
         this.timeLimit = timeLimit;
         this.arenaRegion = arenaRegion;
         this.teams = teams;
+
+        setState(new WaitingState(this));
     }
 
     @Override
@@ -61,23 +56,8 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
     }
 
     @Override
-    public TntPlayer getGamePlayer(String name) {
-        return this.players.get(name);
-    }
-
-    @Override
-    public Collection<TntPlayer> getAllPlayers() {
-        return this.players.values();
-    }
-
-    @Override
     public TntRunManager getManager() {
         return TntRun.getInstance().getTntRunManager();
-    }
-
-    @Override
-    public IGameState getState() {
-        return this.state;
     }
 
     @Override
@@ -115,91 +95,14 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
         return null;
     }
 
-    public void setState(IGameState state) {
-        //Устанавливаем новое
-        this.state = state;
-
-        //Инициализируем новое
-        this.state.initState();
-    }
-
-    public void addPlayer(TntPlayer player) {
-        this.players.put(player.getName(), player);
-    }
-
-    public void removePlayer(String name) {
-        this.players.remove(name);
-    }
-
-    public void sendMessages(String msg) {
-        sendMessages(msg, null);
-    }
-
-    public void sendMessages(String msg, String ignore) {
-        for (TntPlayer tp : this.players.values()) {
-            if (ignore != null) {
-                if (tp.getName().equals(ignore)) {
-                    continue;
-                }
-            }
-
-            Player pl = tp.getPlayer();
-            if (pl.isOnline()) {
-                pl.sendMessage(msg);
-            }
-        }
-    }
-
-    public void sendLevels(int level) {
-        if (Bukkit.isPrimaryThread()) {
-            handleSendLevels(level);
-        }
-        else {
-            Bukkit.getScheduler().runTask(TntRun.getInstance(), () -> {
-                handleSendLevels(level);
-            });
-        }
-    }
-
-    public void sendSounds(Sound sound, float volume, float pitch, Location loc) {
-        for (TntPlayer tp : this.players.values()) {
-            Player pl = tp.getPlayer();
-            if (pl.isOnline()) {
-                pl.playSound((loc != null ? loc : pl.getLocation()), sound, volume, pitch);
-            }
-        }
-    }
-
-    public void sendSounds(Sound sound, float volume, float pitch) {
-        sendSounds(sound, volume, pitch, null);
-    }
-
-    private void handleSendLevels(int level) {
-        for (TntPlayer tp : this.players.values()) {
-            Player pl = tp.getPlayer();
-            if (pl.isOnline()) {
-                pl.setLevel(level);
-            }
-        }
-    }
-
     public Collection<TntPlayer> getAllPlayersType(Class<? extends IPlayerType> clazz) {
         Set<TntPlayer> tmp = new HashSet<>();
-        for (TntPlayer tp : this.players.values()) {
+        for (TntPlayer tp : getAllPlayers()) {
             if (tp.getPlayerType().getClass() == clazz) {
                 tmp.add(tp);
             }
         }
         return tmp;
-    }
-
-    public void sendTitle(String first, String second, int in, int stay, int out) {
-        for (TntPlayer sp : this.players.values()) {
-            Player pl = sp.getPlayer();
-            if (pl.isOnline()) {
-                pl.sendTitle(first, second, in, stay, out);
-            }
-        }
     }
 
     @Override
@@ -222,7 +125,6 @@ public class TntArena extends ClipboardRegenableGameArena implements IForceStart
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     public static TntArena deserialize(Map<String, Object> args) {
         String name = null;
         Material icon = Material.STONE;

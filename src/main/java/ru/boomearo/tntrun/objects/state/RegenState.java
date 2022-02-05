@@ -2,7 +2,8 @@ package ru.boomearo.tntrun.objects.state;
 
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
-import ru.boomearo.gamecontrol.objects.states.AbstractRegenState;
+import ru.boomearo.gamecontrol.objects.states.game.AbstractRegenState;
+import ru.boomearo.gamecontrol.objects.states.perms.SpectatorFirst;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;

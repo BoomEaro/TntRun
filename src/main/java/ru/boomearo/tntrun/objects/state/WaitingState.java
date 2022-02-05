@@ -1,6 +1,7 @@
 package ru.boomearo.tntrun.objects.state;
 
-import ru.boomearo.gamecontrol.objects.states.IWaitingState;
+import ru.boomearo.gamecontrol.objects.states.game.IWaitingState;
+import ru.boomearo.tntrun.board.TntPLLobby;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
@@ -39,7 +40,7 @@ public class WaitingState implements IWaitingState {
 
             tp.getPlayerType().preparePlayer(tp);
 
-            tp.sendBoard(0);
+            tp.sendBoard((playerBoard) -> new TntPLLobby(playerBoard, tp));
         }
     }
 
