@@ -233,6 +233,13 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
         this.cd--;
     }
 
+    public BlockOwner getBlockByLocation(Location loc) {
+        return this.removedBlocks.get(convertLocToString(loc));
+    }
+
+    public void addBlock(Block block, TntPlayer owner) {
+        this.removedBlocks.put(convertLocToString(block.getLocation()), new BlockOwner(block.getType(), owner));
+    }
 
     private static void destroyBlock(Location loc, TntArena arena, TntPlayer owner, RunningState rs) {
         int y = loc.getBlockY() + 1;
@@ -250,7 +257,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             return;
         }
 
-        //Получаем блок под пском
+        //Получаем блок под песком
         Block tntBlock = mBlock.getRelative(BlockFace.DOWN);
 
         //Если под этим блоком нет тнт то игнорим.
@@ -313,14 +320,6 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
 
     private static Block getBlock(World world, double x, int y, double z, double addx, double addz) {
         return world.getBlockAt(NumberConversions.floor(x + addx), y, NumberConversions.floor(z + addz));
-    }
-
-    public BlockOwner getBlockByLocation(Location loc) {
-        return this.removedBlocks.get(convertLocToString(loc));
-    }
-
-    public void addBlock(Block block, TntPlayer owner) {
-        this.removedBlocks.put(convertLocToString(block.getLocation()), new BlockOwner(block.getType(), owner));
     }
 
     public static String convertLocToString(Location loc) {

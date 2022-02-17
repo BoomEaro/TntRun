@@ -40,6 +40,9 @@ public class EndingState implements IEndingState, ICountable, SpectatorFirst {
             if (tp.getPlayerType() instanceof PlayingPlayer) {
                 tp.setPlayerType(new LosePlayer());
             }
+        }
+
+        for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayerType().preparePlayer(tp);
         }
     }

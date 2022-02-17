@@ -37,7 +37,9 @@ public class WaitingState implements IWaitingState {
             if (tp.getPlayerType() instanceof LosePlayer) {
                 tp.setPlayerType(new PlayingPlayer());
             }
+        }
 
+        for (TntPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayerType().preparePlayer(tp);
 
             tp.sendBoard((playerBoard) -> new TntPLLobby(playerBoard, tp));
