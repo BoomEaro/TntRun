@@ -42,7 +42,7 @@ public final class TntRunManager implements IGameManager<TntPlayer> {
 
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<>();
 
-    private final DefaultStatsManager stats;
+    private final DefaultStatsManager stats = new DefaultStatsManager(this, TntStatsType.values());
 
     public static final ChatColor mainColor = GameManager.backgroundTextColor;
     public static final ChatColor variableColor = ChatColor.of(new Color(255, 50, 0));
@@ -54,9 +54,6 @@ public final class TntRunManager implements IGameManager<TntPlayer> {
     public static final double winReward = 10;
 
     public TntRunManager() {
-        DefaultStatsDatabase database = new DefaultStatsDatabase(TntRun.getInstance(), TntStatsType.values());
-        this.stats = new DefaultStatsManager(database);
-
         loadArenas();
     }
 
