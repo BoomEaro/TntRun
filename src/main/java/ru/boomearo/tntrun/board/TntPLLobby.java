@@ -4,12 +4,10 @@ import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.boards.AbstractHolder;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
-import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.managers.TntRunManager;
 import ru.boomearo.tntrun.objects.TntPlayer;
-import ru.boomearo.tntrun.objects.statistics.TntStatsData;
-import ru.boomearo.tntrun.objects.statistics.TntStatsType;
+import ru.boomearo.tntrun.objects.TntStatsType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -165,13 +163,8 @@ public class TntPLLobby extends AbstractPageList {
         }
 
         private static String getStatisticData(TntStatsType type, String name) {
-            TntStatsData data = TntRun.getInstance().getTntRunManager().getStatisticManager().getStatsData(type);
-            StatsPlayer sp = data.getStatsPlayer(name);
-            if (sp == null) {
-                return TntRunManager.mainColor + type.getName() + ": " + TntRunManager.variableColor + "0";
-            }
-
-            return TntRunManager.mainColor + type.getName() + ": " + TntRunManager.variableColor + (long) sp.getValue();
+            double value = TntRun.getInstance().getTntRunManager().getStatisticManager().getStatsValueFromPlayer(type, name);
+            return TntRunManager.mainColor + type.getName() + ": " + TntRunManager.variableColor + (long) value;
         }
 
     }

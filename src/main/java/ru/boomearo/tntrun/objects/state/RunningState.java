@@ -25,16 +25,16 @@ import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.states.game.ICountable;
 import ru.boomearo.gamecontrol.objects.states.game.IRunningState;
 import ru.boomearo.gamecontrol.objects.states.perms.SpectatorFirst;
+import ru.boomearo.gamecontrol.objects.statistics.DefaultStatsManager;
 import ru.boomearo.serverutils.utils.other.DateUtil;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.board.TntPLGame;
 import ru.boomearo.tntrun.managers.TntRunManager;
-import ru.boomearo.tntrun.managers.TntRunStatistics;
 import ru.boomearo.tntrun.objects.TntArena;
 import ru.boomearo.tntrun.objects.TntPlayer;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
-import ru.boomearo.tntrun.objects.statistics.TntStatsType;
+import ru.boomearo.tntrun.objects.TntStatsType;
 
 public class RunningState implements IRunningState, ICountable, SpectatorFirst {
 
@@ -134,8 +134,8 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
             this.deathPlayers++;
 
             //Добавляем единицу в статистику поражений
-            TntRunStatistics trs = TntRun.getInstance().getTntRunManager().getStatisticManager();
-            trs.addStats(TntStatsType.Defeat, tp.getName());
+            DefaultStatsManager trs = TntRun.getInstance().getTntRunManager().getStatisticManager();
+            trs.addStatsToPlayer(TntStatsType.Defeat, tp.getName());
 
             this.arena.sendSounds(Sound.ENTITY_WITHER_HURT, 999, 2);
 
@@ -170,7 +170,7 @@ public class RunningState implements IRunningState, ICountable, SpectatorFirst {
                     this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
 
                     //Добавляем единицу в статистику побед
-                    trs.addStats(TntStatsType.Wins, winner.getName());
+                    trs.addStatsToPlayer(TntStatsType.Wins, winner.getName());
 
                     //В зависимости от того сколько игроков ПРОИГРАЛО мы получим награду.
                     double reward = TntRunManager.winReward + (this.deathPlayers * TntRunManager.winReward);

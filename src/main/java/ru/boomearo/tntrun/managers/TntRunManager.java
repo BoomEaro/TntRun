@@ -23,6 +23,8 @@ import ru.boomearo.gamecontrol.objects.defactions.IDefaultAction;
 
 import ru.boomearo.gamecontrol.objects.states.game.IGameState;
 import ru.boomearo.gamecontrol.objects.states.perms.SpectatorFirst;
+import ru.boomearo.gamecontrol.objects.statistics.DefaultStatsManager;
+import ru.boomearo.gamecontrol.objects.statistics.database.DefaultStatsDatabase;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.board.TntPLGame;
 import ru.boomearo.tntrun.board.TntPLLobby;
@@ -32,6 +34,7 @@ import ru.boomearo.tntrun.objects.TntTeam;
 import ru.boomearo.tntrun.objects.playertype.IPlayerType;
 import ru.boomearo.tntrun.objects.playertype.LosePlayer;
 import ru.boomearo.tntrun.objects.playertype.PlayingPlayer;
+import ru.boomearo.tntrun.objects.TntStatsType;
 
 public final class TntRunManager implements IGameManager<TntPlayer> {
 
@@ -39,7 +42,7 @@ public final class TntRunManager implements IGameManager<TntPlayer> {
 
     private final ConcurrentMap<String, TntPlayer> players = new ConcurrentHashMap<>();
 
-    private final TntRunStatistics stats = new TntRunStatistics();
+    private final DefaultStatsManager stats;
 
     public static final ChatColor mainColor = GameManager.backgroundTextColor;
     public static final ChatColor variableColor = ChatColor.of(new Color(255, 50, 0));
@@ -51,6 +54,9 @@ public final class TntRunManager implements IGameManager<TntPlayer> {
     public static final double winReward = 10;
 
     public TntRunManager() {
+        DefaultStatsDatabase database = new DefaultStatsDatabase(TntRun.getInstance(), TntStatsType.values());
+        this.stats = new DefaultStatsManager(database);
+
         loadArenas();
     }
 
@@ -226,7 +232,7 @@ public final class TntRunManager implements IGameManager<TntPlayer> {
     }
 
     @Override
-    public TntRunStatistics getStatisticManager() {
+    public DefaultStatsManager getStatisticManager() {
         return this.stats;
     }
 
