@@ -24,7 +24,6 @@ import ru.boomearo.gamecontrol.objects.defactions.IDefaultAction;
 import ru.boomearo.gamecontrol.objects.states.game.IGameState;
 import ru.boomearo.gamecontrol.objects.states.perms.SpectatorFirst;
 import ru.boomearo.gamecontrol.objects.statistics.DefaultStatsManager;
-import ru.boomearo.gamecontrol.objects.statistics.database.DefaultStatsDatabase;
 import ru.boomearo.tntrun.TntRun;
 import ru.boomearo.tntrun.board.TntPLGame;
 import ru.boomearo.tntrun.board.TntPLLobby;
